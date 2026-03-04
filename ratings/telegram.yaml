@@ -1,0 +1,86 @@
+date: 2026-03-04
+reviewer: xiaoyuanzhu
+
+criteria:
+  api:
+    rating: yes
+    notes: >
+      Telegram offers three tiers of programmatic access. The Bot API allows bots to receive
+      and send messages via HTTPS with long polling or webhooks, though bots can only access
+      messages sent to them (not arbitrary chat history). The full MTProto client API and TDLib
+      (Telegram Database Library) allow user-authenticated applications to access all of the
+      user's messages, contacts, media, and chat history — essentially anything the official
+      client can do. TDLib provides bindings for C++, Java, .NET, and a JSON interface usable
+      from any language. An api_id and api_hash from my.telegram.org are required.
+  export:
+    rating: yes
+    notes: >
+      Telegram Desktop includes a built-in "Export Telegram data" feature under Settings >
+      Advanced. It can export all private chats, group chats, channels, bot conversations,
+      contacts, and media (photos, videos, files, voice messages). You can also export
+      individual chats via the chat menu. The export covers the full history with no time
+      limit. The feature is only available in Telegram Desktop, not mobile clients.
+  open_format:
+    rating: yes
+    notes: >
+      Telegram Desktop exports data in either machine-readable JSON or human-readable HTML,
+      at the user's choice. The JSON export produces a result.json file with a documented
+      schema (published at core.telegram.org/import-export) covering user info, contacts,
+      chats, messages, and media references. The HTML export generates browsable pages with
+      an index. Both formats are open and well-structured, requiring no proprietary tools
+      to read or parse.
+  realtime_access:
+    rating: yes
+    notes: >
+      The Bot API supports webhooks and long polling for real-time message delivery to bots.
+      For user accounts, TDLib provides a fully asynchronous event-driven architecture —
+      applications receive updateNewMessage and other update objects in real time as messages
+      arrive. The MTProto protocol maintains a persistent connection with the server,
+      enabling immediate delivery of new messages, read receipts, typing indicators, and
+      other events. Multiple client libraries (Telethon for Python, WTelegramClient for C#,
+      GramJS for JavaScript) wrap this functionality.
+  deletion:
+    rating: yes
+    notes: >
+      Telegram allows deletion of individual messages from both sides in private chats with
+      no time limit — the "unsend" feature removes messages for both sender and recipient.
+      Group admins can delete any message for all members. Auto-delete timers can be set per
+      chat (24 hours to 1 year). Full account deletion is available at
+      my.telegram.org/auth and removes all cloud-stored messages, media, contacts, and
+      account data. Accounts also self-destruct after a configurable inactivity period
+      (1, 3, 6, or 12 months; default was 18 months, now configurable). Note that Telegram's
+      privacy policy indicates some metadata (IP addresses, device info) may be retained
+      for up to 12 months after deletion.
+  portability:
+    rating: partial
+    notes: >
+      Exported JSON data is well-structured and easy to parse with standard tools, making
+      it straightforward to convert to other formats or import into databases. However,
+      there is no standardized messaging interchange format — Telegram's JSON schema is
+      specific to Telegram, so importing into another messaging platform requires custom
+      conversion. Telegram does not offer a built-in import-from-other-services tool
+      (though it does support importing chat history from WhatsApp, Line, and KakaoTalk
+      into Telegram). Media files are exported as original files alongside the JSON, which
+      aids portability.
+
+links:
+  - label: Telegram APIs Overview
+    url: https://core.telegram.org
+  - label: TDLib — Telegram Database Library
+    url: https://core.telegram.org/tdlib
+  - label: TDLib Getting Started
+    url: https://core.telegram.org/tdlib/getting-started
+  - label: Telegram Bot API Documentation
+    url: https://core.telegram.org/bots/api
+  - label: Telegram Data Export Schema (JSON)
+    url: https://core.telegram.org/import-export
+  - label: Chat Export Tool Announcement
+    url: https://telegram.org/blog/export-and-more
+  - label: Unsend and Privacy Features
+    url: https://telegram.org/blog/unsend-privacy-emoji
+  - label: Auto-Delete Messages Feature
+    url: https://telegram.org/blog/autodelete-inv2
+  - label: Telegram Privacy Policy
+    url: https://telegram.org/privacy
+  - label: MTProto Protocol Documentation
+    url: https://core.telegram.org/mtproto
