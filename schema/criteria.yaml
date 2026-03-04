@@ -1,0 +1,48 @@
+criteria:
+  - id: api
+    name: API Access
+    question: Can you programmatically read your data?
+    values:
+      yes: Full API with read access to your data
+      partial: Limited API, restricted endpoints, or device-only
+      no: No programmatic access
+
+  - id: export
+    name: Bulk Export
+    question: Can you download all your data at once?
+    values:
+      yes: Complete data export available
+      partial: Partial export, or requires multiple steps
+      no: No bulk export
+
+  - id: open_format
+    name: Open Formats
+    question: Is exported data in standard, open formats?
+    values:
+      yes: Standard formats (JSON, CSV, XML, etc.)
+      partial: Open format but proprietary schema
+      no: Proprietary/binary format only
+
+  - id: realtime_access
+    name: Real-time Access
+    question: Can you access your data as it's created?
+    values:
+      yes: Live sync, webhooks, or streaming API
+      partial: Near-realtime or on-device only
+      no: Only periodic dumps or manual export
+
+  - id: deletion
+    name: Data Deletion
+    question: Can you truly delete your data?
+    values:
+      yes: Full deletion, including from backups (or clear policy)
+      partial: Can delete some data, or unclear retention policy
+      no: No deletion capability or data persists after account closure
+
+  - id: portability
+    name: Portability
+    question: Can you actually use your data elsewhere?
+    values:
+      yes: Exported data works in competing/alternative services
+      partial: Export works but few services can import it
+      no: Data is effectively locked in even if exportable
