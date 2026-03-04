@@ -1,0 +1,5 @@
+name: Apple Health
+website: https://www.apple.com/health/
+description: Health and fitness data aggregator on iOS
+vendor: Apple
+tags: [health, fitness, wearable, ios]

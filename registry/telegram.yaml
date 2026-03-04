@@ -1,0 +1,5 @@
+name: Telegram
+website: https://telegram.org/
+description: Cloud-based messaging with groups, channels, and bots
+vendor: Telegram FZ-LLC
+tags: [messaging, chat, social]
