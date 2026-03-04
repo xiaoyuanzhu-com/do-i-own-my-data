@@ -3,7 +3,7 @@ reviewer: xiaoyuanzhu
 
 criteria:
   api:
-    rating: yes
+    rating: "yes"
     notes: >
       Telegram offers three tiers of programmatic access. The Bot API allows bots to receive
       and send messages via HTTPS with long polling or webhooks, though bots can only access
@@ -13,7 +13,7 @@ criteria:
       client can do. TDLib provides bindings for C++, Java, .NET, and a JSON interface usable
       from any language. An api_id and api_hash from my.telegram.org are required.
   export:
-    rating: yes
+    rating: "yes"
     notes: >
       Telegram Desktop includes a built-in "Export Telegram data" feature under Settings >
       Advanced. It can export all private chats, group chats, channels, bot conversations,
@@ -21,7 +21,7 @@ criteria:
       individual chats via the chat menu. The export covers the full history with no time
       limit. The feature is only available in Telegram Desktop, not mobile clients.
   open_format:
-    rating: yes
+    rating: "yes"
     notes: >
       Telegram Desktop exports data in either machine-readable JSON or human-readable HTML,
       at the user's choice. The JSON export produces a result.json file with a documented
@@ -30,7 +30,7 @@ criteria:
       an index. Both formats are open and well-structured, requiring no proprietary tools
       to read or parse.
   realtime_access:
-    rating: yes
+    rating: "yes"
     notes: >
       The Bot API supports webhooks and long polling for real-time message delivery to bots.
       For user accounts, TDLib provides a fully asynchronous event-driven architecture —
@@ -40,7 +40,7 @@ criteria:
       other events. Multiple client libraries (Telethon for Python, WTelegramClient for C#,
       GramJS for JavaScript) wrap this functionality.
   deletion:
-    rating: yes
+    rating: "yes"
     notes: >
       Telegram allows deletion of individual messages from both sides in private chats with
       no time limit — the "unsend" feature removes messages for both sender and recipient.

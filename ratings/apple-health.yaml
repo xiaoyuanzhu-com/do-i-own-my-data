@@ -11,7 +11,7 @@ criteria:
       the user's iPhone or Apple Watch. You cannot query your health data from a backend or
       desktop application directly. Third-party apps must request per-type read/write permissions.
   export:
-    rating: yes
+    rating: "yes"
     notes: >
       The Health app on iPhone provides a built-in "Export All Health Data" feature accessible
       from your profile. It produces a ZIP archive containing export.xml (all health samples)
@@ -36,7 +36,7 @@ criteria:
       background updates per hour). There are no webhooks, no push notifications to external
       servers, and no streaming API — real-time access is confined to on-device iOS/watchOS apps.
   deletion:
-    rating: yes
+    rating: "yes"
     notes: >
       You can delete health data granularly or in bulk. In the Health app, navigate to a data
       category, tap "Show All Data," then use Edit to delete individual records or "Delete All"

@@ -3,7 +3,7 @@ reviewer: xiaoyuanzhu
 
 criteria:
   api:
-    rating: no
+    rating: "no"
     notes: >
       WeChat provides no user-facing API for accessing personal messages, contacts, or chat
       history. The Official Account API and Mini Program API are designed for businesses and
@@ -24,7 +24,7 @@ criteria:
       read or used independently. There is no way to bulk-export your full chat history, contacts
       list, or media through official means.
   open_format:
-    rating: no
+    rating: "no"
     notes: >
       The official personal data export is delivered as a password-protected ZIP file, but
       WeChat does not document the internal file formats. The desktop backup of chat history
@@ -35,7 +35,7 @@ criteria:
       filesystem access to WeChat's encrypted SQLite databases — it is not an officially
       supported workflow.
   realtime_access:
-    rating: no
+    rating: "no"
     notes: >
       There is no API, webhook, or streaming interface for individual users to access their
       messages or data in real time. The Official Account API provides a 48-hour messaging
@@ -55,7 +55,7 @@ criteria:
       additional restrictions. There is no granular "delete all my data but keep my account"
       option.
   portability:
-    rating: no
+    rating: "no"
     notes: >
       WeChat provides no meaningful way to move your data to another platform. Chat history
       can only be migrated between WeChat installations on different devices — never out of

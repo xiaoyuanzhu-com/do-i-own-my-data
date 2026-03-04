@@ -11,7 +11,7 @@ criteria:
       Unofficial Python libraries (garminconnect on PyPI) exist but rely on
       screen-scraping Garmin Connect credentials, which violates Garmin's ToS.
   export:
-    rating: yes
+    rating: "yes"
     notes: >
       Garmin provides a full account data export via the Data Management portal
       at garmin.com/account/datamanagement (introduced in 2018 for GDPR compliance).
@@ -19,7 +19,7 @@ criteria:
       all your data, typically within 48 hours. Individual activities can also be
       exported one at a time from the Garmin Connect web interface.
   open_format:
-    rating: yes
+    rating: "yes"
     notes: >
       Activities export in FIT (Garmin's binary but openly documented format),
       GPX (open XML standard), and TCX (Garmin's XML extension of GPX). The FIT
@@ -44,7 +44,7 @@ criteria:
       fully transparent — the support page notes it "may take some time"
       for complete removal.
   portability:
-    rating: yes
+    rating: "yes"
     notes: >
       Garmin data transfers well to competing platforms. Strava supports direct
       sync from Garmin Connect and can import GPX/TCX/FIT files. Most major

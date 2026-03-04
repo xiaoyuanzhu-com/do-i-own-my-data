@@ -14,7 +14,7 @@ criteria:
       exists but its Google Photos support is limited and region-restricted (EU/UK).
 
   export:
-    rating: yes
+    rating: "yes"
     notes: >
       Google Takeout allows bulk export of all photos and videos. Users select Google
       Photos as a data source, choose file size and format (ZIP), and receive download
@@ -36,7 +36,7 @@ criteria:
       standard formats (MP4, MOV, MKV, etc.).
 
   realtime_access:
-    rating: no
+    rating: "no"
     notes: >
       There is no webhook, push notification, or streaming API for Google Photos.
       The Picker API uses a polling model for user selections but does not provide
