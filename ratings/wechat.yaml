@@ -2,68 +2,70 @@ date: 2026-03-04
 reviewer: xiaoyuanzhu
 
 criteria:
-  api:
+  read:
     rating: "no"
     notes: >
-      WeChat provides no user-facing API for accessing personal messages, contacts, or chat
-      history. The Official Account API and Mini Program API are designed for businesses and
-      developers to interact with followers — not for individual users to read their own data.
-      Access to the Official Account API requires a verified business entity registered in China.
-      There are unofficial/reverse-engineered SDKs (e.g., wechatsdk.com) but these violate
-      WeChat's terms of service and risk account suspension. An ordinary user has zero
-      programmatic access to their own messages or social graph.
-  export:
-    rating: partial
-    notes: >
-      WeChat offers a limited official data export via Me > Settings > Privacy > My Information
-      & Authorizations > View and Export Personal Data. However, this only covers Moments posts,
-      Favorites, and basic account information. Chat history is explicitly excluded from this
-      export because WeChat states it is not stored on their servers. The desktop app (PC/Mac)
-      has a "Backup and Restore" feature that saves chat history, but the backup is encrypted
-      and proprietary — it can only be restored back onto a phone through WeChat itself, not
-      read or used independently. There is no way to bulk-export your full chat history, contacts
-      list, or media through official means.
-  open_format:
+      WeChat provides no meaningful way to read your data outside the app. There is no
+      user-facing API — the Official Account API and Mini Program API are for businesses
+      only. The limited personal data export (Me > Settings > Privacy > My Information)
+      only covers Moments posts, Favorites, and basic account info — chat history is
+      excluded because WeChat states it is not stored on servers. The desktop "Backup and
+      Restore" saves chat history in a proprietary encrypted format that can only be
+      restored within WeChat itself. There is no webhook, streaming API, or real-time
+      access. Unofficial tools exist (wechat-export on GitHub) but require rooted/
+      jailbroken devices and violate ToS.
+
+  write:
     rating: "no"
     notes: >
-      The official personal data export is delivered as a password-protected ZIP file, but
-      WeChat does not document the internal file formats. The desktop backup of chat history
-      uses a proprietary encrypted format that can only be read by the WeChat app itself.
-      There is no JSON, CSV, XML, or any standard format offered for exported data.
-      Third-party tools like wechat-export (GitHub) can extract chat databases from rooted
-      Android devices or jailbroken iPhones into HTML or JSON, but this requires direct
-      filesystem access to WeChat's encrypted SQLite databases — it is not an officially
-      supported workflow.
-  realtime_access:
+      There is no way to import data into WeChat from outside. No import API, no bulk
+      upload, no migration tool from other messaging platforms. The only way to get
+      chat history into WeChat is via the "Backup and Restore" feature between WeChat
+      installations on different devices — never from an external source. You cannot
+      import contacts, messages, or media from any other service.
+
+  understand:
     rating: "no"
     notes: >
-      There is no API, webhook, or streaming interface for individual users to access their
-      messages or data in real time. The Official Account API provides a 48-hour messaging
-      window for businesses to respond to followers, but this is not a general-purpose
-      real-time data access mechanism for personal accounts. Users can only view their
-      messages through the WeChat app itself.
-  deletion:
+      The official personal data export is delivered as a password-protected ZIP with
+      undocumented internal formats. The desktop chat backup uses a proprietary encrypted
+      format readable only by WeChat. There is no JSON, CSV, XML, or any standard format
+      offered. Third-party tools can extract chat databases from rooted Android or
+      jailbroken iOS devices into HTML or JSON, but this requires accessing WeChat's
+      encrypted SQLite databases — not an officially supported workflow. Even when
+      extracted, the schema is undocumented and reverse-engineered.
+
+  delete:
     rating: partial
     notes: >
       Users can delete individual messages from their own view within chats, though this
       does not remove them from the recipient's device. Full account deletion is available
       via Me > Settings > Account Security > WeChat Security Center > Account Cancellation,
-      with a cooling-off period of 15 days (Android) or 60 days (iOS) before permanent
-      deletion. Account deletion removes associated data, though aggregated registration
-      data is retained for spam prevention and login data is kept up to 90 days. Notably,
-      account deletion for users who registered in mainland China has historically had
-      additional restrictions. There is no granular "delete all my data but keep my account"
-      option.
-  portability:
+      with a cooling-off period of 15 days (Android) or 60 days (iOS). Account deletion
+      removes associated data, though aggregated registration data is retained for spam
+      prevention and login data is kept up to 90 days. There is no granular "delete all
+      my data but keep my account" option.
+
+  ownership:
+    rating: "yes"
+    notes: >
+      Tencent's terms grant the company broad rights over user content. WeChat's privacy
+      policy allows data to be used for service improvement, advertising, and shared with
+      Tencent group companies. In China, content posted on WeChat may be subject to
+      government access requests. WeChat collects extensive metadata (contacts, location,
+      device info, usage patterns). The platform's business model relies partly on
+      targeted advertising using user data. Content shared on Moments or groups may be
+      analyzed for content moderation and recommendation purposes.
+
+  agent_friendly:
     rating: "no"
     notes: >
-      WeChat provides no meaningful way to move your data to another platform. Chat history
-      can only be migrated between WeChat installations on different devices — never out of
-      the WeChat ecosystem. The limited personal data export (Moments, Favorites, account
-      info) is not in a format designed for import into any other service. The encrypted
-      desktop backup cannot be decrypted or converted without reverse-engineering. In
-      practice, years of conversations, shared files, and social connections are locked
-      inside WeChat with no official path to extract them.
+      WeChat is fundamentally hostile to automation for individual users. There is no
+      personal-use API, no OAuth for user data access, no documented data formats, and
+      no way to programmatically read or write personal messages. The Official Account
+      API requires a verified Chinese business entity. Unofficial automation tools risk
+      account suspension. An AI agent has zero viable path to interact with a user's
+      WeChat data through sanctioned means.
 
 links:
   - label: WeChat Privacy Policy
@@ -78,3 +80,5 @@ links:
     url: https://developers.weixin.qq.com/miniprogram/en/dev/framework/app-service/api.html
   - label: wechat-export — Unofficial chat history exporter (GitHub)
     url: https://github.com/luin/wechat-export
+  - label: Tencent Terms of Service
+    url: https://www.tencent.com/en-us/service-agreement.html

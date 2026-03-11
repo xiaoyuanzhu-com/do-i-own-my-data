@@ -12,12 +12,24 @@ Each product has a **registry entry** (what it is) and a **rating** (how it scor
 
 | Criterion | Question |
 |-----------|----------|
-| **API Access** | Can you programmatically read your data? |
-| **Bulk Export** | Can you download all your data at once? |
-| **Open Formats** | Is exported data in standard, open formats? |
-| **Real-time Access** | Can you access your data as it's created? |
-| **Data Deletion** | Can you truly delete your data? |
-| **Portability** | Can you actually use your data elsewhere? |
+| **Read** | Can I read my data? |
+| **Write** | Can I write my data? |
+| **Understand** | Can I understand my data? |
+| **Delete** | Can I delete my data? |
+| **Ownership** | Do they own my data? |
+| **Agent-Friendly** | Is it agent-friendly? |
+
+> **Read** — not just viewing in the app. Can you export, download, or access your data programmatically (API, sync, bulk export, real-time streaming)?
+>
+> **Write** — can you bring data in from outside? Import, restore, push via API?
+>
+> **Understand** — once you have your data, does it make sense? Open formats, clear schema, good docs? If the data is understandable, it's portable.
+>
+> **Delete** — true deletion, not just hiding. Is your data actually gone?
+>
+> **Ownership** — does the platform claim rights over your data? Can they use it for AI training, ads, resale?
+>
+> **Agent-Friendly** — can an AI agent do all the above programmatically, without manual steps?
 
 See `schema/criteria.yaml` for the full definitions including what yes/partial/no means for each.
 

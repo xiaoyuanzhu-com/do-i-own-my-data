@@ -2,55 +2,66 @@ date: 2026-03-04
 reviewer: xiaoyuanzhu
 
 criteria:
-  api:
+  read:
     rating: partial
     notes: >
-      Garmin offers a Connect Developer Program with Health API and Activity API,
-      but access is restricted to approved business developers — there is no
-      personal-use API. Individual users cannot get API keys for their own data.
-      Unofficial Python libraries (garminconnect on PyPI) exist but rely on
-      screen-scraping Garmin Connect credentials, which violates Garmin's ToS.
-  export:
+      Garmin provides a full account data export via the Data Management portal at
+      garmin.com/account/datamanagement (introduced for GDPR compliance). You request a
+      download and receive a ZIP via email, typically within 48 hours. Individual activities
+      can be exported one at a time from Garmin Connect. The Connect Developer Program
+      offers Health API and Activity API with push/pull delivery within seconds of device
+      sync — but access is restricted to approved business developers only. Individual
+      users cannot get API keys for their own data. Unofficial libraries (garminconnect on
+      PyPI) exist but violate Garmin's ToS. Bulk export works well; programmatic and
+      real-time access is locked behind business approval.
+
+  write:
+    rating: "no"
+    notes: >
+      Garmin Connect does not support importing activities or health data from external
+      sources. There is no import API, no bulk upload feature, and no way to push data
+      into Garmin Connect from outside the Garmin device ecosystem. The developer APIs
+      are read-only. You cannot migrate data from another fitness platform into Garmin.
+      The only way data enters Garmin Connect is from a Garmin device or the Garmin
+      Connect app's manual activity creation.
+
+  understand:
     rating: "yes"
     notes: >
-      Garmin provides a full account data export via the Data Management portal
-      at garmin.com/account/datamanagement (introduced in 2018 for GDPR compliance).
-      You request a download, and Garmin emails you a link to a ZIP file containing
-      all your data, typically within 48 hours. Individual activities can also be
-      exported one at a time from the Garmin Connect web interface.
-  open_format:
-    rating: "yes"
-    notes: >
-      Activities export in FIT (Garmin's binary but openly documented format),
-      GPX (open XML standard), and TCX (Garmin's XML extension of GPX). The FIT
-      SDK is publicly available. The bulk data export includes original FIT files.
-      Activity summaries are available as CSV. All three activity formats are
-      widely supported by fitness platforms.
-  realtime_access:
+      Activities export in FIT (Garmin's binary but openly documented format with a
+      public SDK), GPX (open XML standard), and TCX (Garmin's XML extension). The bulk
+      data export includes original FIT files and activity summaries as CSV. All three
+      activity formats are widely supported by fitness platforms and tools. The FIT SDK
+      is publicly available for parsing. Data is well-structured and interoperable.
+
+  delete:
     rating: partial
     notes: >
-      The official Health API supports both push and ping/pull architectures,
-      delivering notifications within seconds of a device sync. However, this
-      is only available to approved business developers, not individual users.
-      There is no user-facing real-time data stream or webhook. On-device
-      Connect IQ apps can access sensor data in real time.
-  deletion:
-    rating: partial
+      You can delete individual activities and daily monitoring data from Garmin Connect.
+      Full account deletion is available and removes data from Garmin Connect, Garmin
+      Express, and linked services. However, Garmin's retention policy on backups and
+      processing systems is not fully transparent — the support page notes it "may take
+      some time" for complete removal.
+
+  ownership:
+    rating: "no"
     notes: >
-      You can delete individual activities and daily monitoring data from
-      Garmin Connect. Full account deletion is available and removes data
-      from Garmin Connect, Garmin Express, and linked services. However,
-      Garmin's retention policy on backups and processing systems is not
-      fully transparent — the support page notes it "may take some time"
-      for complete removal.
-  portability:
-    rating: "yes"
+      Garmin's privacy policy states they collect fitness and health data to provide
+      their services. Garmin does not sell personal data to third parties. Data sharing
+      is limited to service providers acting on Garmin's behalf. Garmin does not use
+      individual user data for advertising targeting. Aggregated and de-identified data
+      may be used for research and product improvement, but individual data is not
+      monetized or licensed to third parties.
+
+  agent_friendly:
+    rating: "no"
     notes: >
-      Garmin data transfers well to competing platforms. Strava supports direct
-      sync from Garmin Connect and can import GPX/TCX/FIT files. Most major
-      fitness platforms (Strava, TrainingPeaks, Runkeeper, Ride with GPS) accept
-      FIT, GPX, and TCX imports. The bulk export ZIP contains original FIT files
-      that preserve all recorded metrics.
+      The developer APIs (Health API, Activity API) are restricted to approved business
+      developers — individual users cannot obtain API credentials for their own data.
+      The bulk export requires manual request through the web portal and email delivery
+      (48-hour wait). There is no personal-use API, no OAuth flow for individual users,
+      and no way to automate data retrieval. An AI agent would have to rely on unofficial
+      scraping libraries that violate Garmin's ToS.
 
 links:
   - label: Garmin Connect Data Export FAQ
@@ -65,11 +76,5 @@ links:
     url: https://developer.garmin.com/gc-developer-program/activity-api/
   - label: Deleting Your Garmin Account
     url: https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6
-  - label: How to Delete Data from Garmin Connect
-    url: https://support.garmin.com/en-US/?faq=uj0Ewfb58w1DGR0WI87gB9
-  - label: Strava - Import from Garmin Connect
-    url: https://support.strava.com/hc/en-us/articles/216917877-Import-Historical-Data-From-Garmin-Connect
-  - label: Strava - Exporting Files from Garmin Connect
-    url: https://support.strava.com/hc/en-us/articles/216917807-Exporting-Files-from-Garmin-Connect
-  - label: Developer Program Access Request Form
-    url: https://www.garmin.com/en-US/forms/GarminConnectDeveloperAccess/
+  - label: Garmin Privacy Policy
+    url: https://www.garmin.com/en-US/privacy/global/

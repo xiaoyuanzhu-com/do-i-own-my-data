@@ -2,68 +2,70 @@ date: 2026-03-04
 reviewer: xiaoyuanzhu
 
 criteria:
-  api:
+  read:
     rating: partial
     notes: >
-      The Library API read-only scopes (photoslibrary.readonly, photoslibrary.sharing,
-      photoslibrary) were removed on March 31, 2025. Apps can now only list, search,
-      and retrieve media items that the app itself created. To access existing library
-      content, developers must use the new Picker API, which requires the user to
-      manually select specific photos through a Google-controlled UI -- there is no
-      way to programmatically enumerate the full library. The Data Portability API
-      exists but its Google Photos support is limited and region-restricted (EU/UK).
+      Google Takeout allows bulk export of all photos and videos as ZIP files, though
+      exports can take hours or days. However, the Library API read-only scopes were
+      removed on March 31, 2025 — apps can now only access media they themselves created.
+      The new Picker API requires manual user selection via Google-controlled UI, with no
+      way to programmatically enumerate the full library. The Data Portability API has
+      limited Google Photos support and is region-restricted (EU/UK). There is no webhook,
+      push notification, or streaming API for real-time access. Bulk export works, but
+      programmatic and real-time access is severely degraded.
 
-  export:
-    rating: "yes"
-    notes: >
-      Google Takeout allows bulk export of all photos and videos. Users select Google
-      Photos as a data source, choose file size and format (ZIP), and receive download
-      links via email. Exports can be very large and may take hours or days to prepare.
-      The process works but has known issues: EXIF metadata is stripped from many photos
-      and stored in separate JSON sidecar files that must be merged back manually using
-      third-party tools. Google renamed these sidecars in late 2024 from
-      IMG_1234.jpg.json to IMG_1234.jpg.supplemental-metadata.json.
-
-  open_format:
+  write:
     rating: partial
     notes: >
-      Photos are exported in their original formats (JPEG, PNG, GIF, WebP, AVIF, RAW).
-      However, Google may re-compress images uploaded under the "Storage saver" quality
-      setting, so originals are not always preserved. Metadata is exported in a
-      proprietary Google-specific JSON sidecar format rather than standard EXIF/XMP
-      embedded in the files. Users must use third-party tools (like ExifTool scripts)
-      to merge the JSON metadata back into the image files. Videos are exported in
-      standard formats (MP4, MOV, MKV, etc.).
+      The Photos API allows uploading media items, but uploaded items can only be placed
+      in albums created by the same app — they cannot be added to the user's main library
+      directly. There is no bulk import tool for migrating from another service into
+      Google Photos. Google does support server-side transfer from iCloud Photos via the
+      Data Transfer Initiative, but only inbound from Apple. Manual upload via the web UI
+      or mobile app is always available.
 
-  realtime_access:
-    rating: "no"
+  understand:
+    rating: partial
     notes: >
-      There is no webhook, push notification, or streaming API for Google Photos.
-      The Picker API uses a polling model for user selections but does not provide
-      library-change notifications. There is no way to programmatically detect or
-      sync new uploads in real time. The only option is periodic manual exports via
-      Google Takeout.
+      Photos are exported in their original formats (JPEG, PNG, GIF, WebP, AVIF, RAW),
+      though Google may re-compress images uploaded under "Storage saver" quality. The key
+      problem is metadata: EXIF data is stripped from many photos and stored in separate
+      proprietary JSON sidecar files (renamed in late 2024 to
+      IMG_1234.jpg.supplemental-metadata.json). Users must use third-party tools like
+      ExifTool scripts to merge metadata back into files. Videos export in standard
+      formats (MP4, MOV, MKV). Album structure and AI-generated metadata (face tags,
+      object labels) are not included in the export.
 
-  deletion:
+  delete:
     rating: partial
     notes: >
       Users can delete photos through the web UI and mobile apps, but there is no
-      "delete all" button -- bulk deletion requires selecting photos in batches or
-      using third-party browser extensions and scripts. The API only allows deleting
-      media items that the app itself created. Deleted photos go to Trash and are
-      permanently removed after 60 days. Google's data retention policies for backups
-      and ML training data derived from photos are not fully transparent.
+      "delete all" button — bulk deletion requires selecting photos in batches or using
+      third-party browser extensions. The API only allows deleting media items the app
+      itself created. Deleted photos go to Trash and are permanently removed after 60
+      days. Google's data retention policies for backups and ML training data derived
+      from photos are not fully transparent.
 
-  portability:
+  ownership:
     rating: partial
     notes: >
-      Google and Apple launched a direct transfer tool (via the Data Transfer Initiative)
-      in July 2024, allowing server-side transfer from Google Photos to iCloud Photos
-      without downloading. Supported formats include JPEG, PNG, GIF, WebP, AVIF, RAW
-      photos and MP4, MOV, MKV videos. However, transfers to other services (Immich,
-      Flickr, Amazon Photos, etc.) require manual download via Takeout and re-upload,
-      with the metadata JSON sidecar problem making this error-prone. Album structure
-      and AI-generated metadata (face tags, object labels) are not portable.
+      Google's ToS states you retain ownership of your content, but you grant Google a
+      worldwide, royalty-free license to use, host, store, reproduce, modify, create
+      derivative works, communicate, publish, and distribute your content. Google uses
+      photos for improving services including AI/ML features (face recognition, scene
+      detection, search). Google Photos data may be used to train Google's AI models
+      unless users opt out via specific settings. The scope of the license is broad
+      relative to what's needed to provide the service.
+
+  agent_friendly:
+    rating: "no"
+    notes: >
+      Since the Library API read scopes were removed in March 2025, there is no way for
+      an AI agent to programmatically read a user's photo library. The Picker API requires
+      manual user interaction through a Google-controlled UI. Bulk export via Takeout is
+      manual and not automatable via API. The Data Portability API is limited and
+      region-restricted. An agent would have to rely on scraping or manual user steps,
+      making automated workflows impractical.
 
 links:
   - label: Google Photos APIs overview
@@ -80,7 +82,5 @@ links:
     url: https://metadatafixer.com/learn/google-takeout-json-files-explained
   - label: Google Photos to iCloud transfer (Data Transfer Initiative)
     url: https://dtinit.org/blog/2024/07/10/DTI-members-new-photo-video-tool
-  - label: Apple support - Transfer to iCloud Photos
-    url: https://support.apple.com/en-us/120924
-  - label: API limits and quotas
-    url: https://developers.google.com/photos/overview/api-limits-quotas
+  - label: Google Terms of Service
+    url: https://policies.google.com/terms

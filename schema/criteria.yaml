@@ -1,48 +1,78 @@
 criteria:
-  - id: api
-    name: API Access
-    question: Can you programmatically read your data?
+  - id: read
+    name: Read
+    question: Can I read my data?
+    note: >
+      Not just viewing in the app. Can you export, download, or access your data
+      programmatically — via API, bulk export, sync, or real-time streaming? Covers
+      both batch (download a ZIP) and incremental (API, webhooks) access. Completeness
+      and freshness of the data matter too.
     values:
-      yes: Full API with read access to your data
-      partial: Limited API, restricted endpoints, or device-only
-      no: No programmatic access
+      yes: Full access — complete data via API, export, or sync, including real-time or near-real-time
+      partial: Some access but limited — partial export, restricted API, delayed data, or device-only
+      no: No way to get your data out of the product
 
-  - id: export
-    name: Bulk Export
-    question: Can you download all your data at once?
+  - id: write
+    name: Write
+    question: Can I write my data?
+    note: >
+      Can you bring data into the product from outside? Import from another service,
+      restore from a backup, push via API, or bulk upload. This is about getting data
+      in, not just creating it through the product's own UI.
     values:
-      yes: Complete data export available
-      partial: Partial export, or requires multiple steps
-      no: No bulk export
+      yes: Full write access — API, import, or bulk upload supported
+      partial: Limited write — only certain data types, manual import only, or restricted API
+      no: No way to bring data in from outside the product
 
-  - id: open_format
-    name: Open Formats
-    question: Is exported data in standard, open formats?
+  - id: understand
+    name: Understand
+    question: Can I understand my data?
+    note: >
+      Once you have your data, does it make sense? Is it in open, standard formats
+      (JSON, CSV, XML) with clear schema and documentation? Or is it a proprietary
+      blob of IDs and encoded fields that requires reverse-engineering? If the data is
+      understandable, it's portable — humans and AI agents can interpret and move it.
     values:
-      yes: Standard formats (JSON, CSV, XML, etc.)
-      partial: Open format but proprietary schema
-      no: Proprietary/binary format only
+      yes: Open standard formats with clear, documented schema
+      partial: Open format but proprietary or undocumented schema — requires effort to interpret
+      no: Proprietary or binary format, effectively unreadable without the original product
 
-  - id: realtime_access
-    name: Real-time Access
-    question: Can you access your data as it's created?
+  - id: delete
+    name: Delete
+    question: Can I delete my data?
+    note: >
+      Can you truly remove your data — not just hide it? This includes deletion from
+      backups and a clear retention policy. Covers both granular deletion (individual
+      records) and full account data removal.
     values:
-      yes: Live sync, webhooks, or streaming API
-      partial: Near-realtime or on-device only
-      no: Only periodic dumps or manual export
+      yes: Full deletion with clear policy, including removal from backups
+      partial: Can delete some data, but unclear retention policy or incomplete removal
+      no: No deletion capability, or data persists after account closure
 
-  - id: deletion
-    name: Data Deletion
-    question: Can you truly delete your data?
+  - id: ownership
+    name: Ownership
+    question: Do they own my data?
+    note: >
+      Even if you can export your data, does the platform claim rights over it? Some
+      services grant themselves broad licenses to use, sublicense, or sell your data —
+      for ad targeting, AI training, or third-party sales. This criterion checks whether
+      the platform treats your data as theirs to exploit, beyond what's needed to
+      provide the service.
     values:
-      yes: Full deletion, including from backups (or clear policy)
-      partial: Can delete some data, or unclear retention policy
-      no: No deletion capability or data persists after account closure
+      yes: They own or broadly license your data — ToS allows use for AI training, ads, resale, etc.
+      partial: Broad license in ToS but limited in practice, or unclear terms
+      no: Your data is yours — platform only uses it to provide the service
 
-  - id: portability
-    name: Portability
-    question: Can you actually use your data elsewhere?
+  - id: agent_friendly
+    name: Agent-Friendly
+    question: Is it agent-friendly?
+    note: >
+      Can an AI agent perform all of the above (read, write, understand, delete)
+      programmatically and without manual steps? This means well-documented APIs,
+      machine-readable formats, no CAPTCHAs or anti-automation barriers, and
+      support for OAuth or token-based auth. A product can score well on individual
+      criteria but still fail here if everything requires clicking through a UI.
     values:
-      yes: Exported data works in competing/alternative services
-      partial: Export works but few services can import it
-      no: Data is effectively locked in even if exportable
+      yes: Full programmatic access — documented APIs, standard auth, machine-readable data
+      partial: Some automation possible but with significant friction — undocumented API, scraping required, or manual steps involved
+      no: No programmatic access — all interactions require manual UI usage
