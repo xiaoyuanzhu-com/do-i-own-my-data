@@ -159,3 +159,61 @@ footer {
 footer a {
   color: #555;
 }
+
+/* Product detail */
+.product-meta {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  background: #e9ecef;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #555;
+}
+
+.criterion {
+  margin-bottom: 1.5rem;
+}
+
+.criterion h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.criterion p {
+  color: #444;
+  line-height: 1.7;
+}
+
+.review-meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  margin-top: 2rem;
+}
+
+h2 {
+  margin-top: 2rem;
+}
+
+ul {
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.4rem;
+}

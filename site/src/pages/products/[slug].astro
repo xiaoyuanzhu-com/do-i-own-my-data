@@ -1,0 +1,63 @@
+---
+import Base from '../../layouts/Base.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import { loadProducts, loadCriteriaSchema } from '../../data/products';
+
+export function getStaticPaths() {
+  const products = loadProducts();
+  return products.map(product => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const criteriaSchema = loadCriteriaSchema();
+
+function formatDate(d: unknown): string {
+  if (d instanceof Date) return d.toISOString().slice(0, 10);
+  return String(d);
+}
+---
+<Base title={product.name}>
+  <article class="product-detail">
+    <h1>{product.name}</h1>
+    <p class="product-meta">
+      by {product.vendor} ·
+      <a href={product.website} target="_blank">{product.website}</a>
+    </p>
+    <p>{product.description}</p>
+    <div class="tags">
+      {product.tags.map(tag => <span class="tag">{tag}</span>)}
+    </div>
+
+    <h2>Ratings</h2>
+    {product.date && <p class="review-meta">Reviewed {formatDate(product.date)} by {product.reviewer}</p>}
+
+    {criteriaSchema.map(criterion => {
+      const entry = product.criteria[criterion.id];
+      return (
+        <section class="criterion">
+          <h3>
+            {criterion.name}: {criterion.question}
+            {entry && <RatingBadge rating={entry.rating} />}
+          </h3>
+          {entry?.notes && <p>{entry.notes}</p>}
+        </section>
+      );
+    })}
+
+    {product.links.length > 0 && (
+      <>
+        <h2>Sources</h2>
+        <ul>
+          {product.links.map(link => (
+            <li><a href={link.url} target="_blank">{link.label}</a></li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    <p class="back-link"><a href="/">← Back to all products</a></p>
+  </article>
+</Base>
