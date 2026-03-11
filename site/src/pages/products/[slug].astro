@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
+import ProductLogo from '../../components/ProductLogo.astro';
 import { loadProducts, loadCriteriaSchema } from '../../data/products';
 
 export function getStaticPaths() {
@@ -21,7 +22,7 @@ function formatDate(d: unknown): string {
 ---
 <Base title={product.name}>
   <article class="product-detail">
-    <h1>{product.name}</h1>
+    <h1 class="product-title"><ProductLogo name={product.name} logoUrl={product.logoUrl} size={48} /> {product.name}</h1>
     <p class="product-meta">
       by {product.vendor} ·
       <a href={product.website} target="_blank">{product.website}</a>
