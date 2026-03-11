@@ -217,3 +217,18 @@ ul {
 li {
   margin-bottom: 0.4rem;
 }
+
+/* About page criteria sections */
+.criterion-about {
+  margin-bottom: 1.5rem;
+}
+
+.criterion-about h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+.criterion-about p {
+  color: #444;
+  line-height: 1.7;
+}

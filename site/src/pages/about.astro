@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadCriteriaSchema } from '../data/products';
+
+const criteria = loadCriteriaSchema();
+---
+<Base title="About">
+  <h1>About</h1>
+  <p>
+    <strong>Do I Own My Data?</strong> is a community-driven directory that rates products
+    on how friendly they are toward user data ownership.
+  </p>
+  <p>
+    Many apps and services collect your data but make it hard to access, export, or move it
+    elsewhere. This project evaluates products against six concrete criteria so consumers can
+    make informed choices about where their data lives.
+  </p>
+
+  <h2>The 6 Criteria</h2>
+  {criteria.map(c => (
+    <section class="criterion-about">
+      <h3>{c.name}: {c.question}</h3>
+      <p>{c.note}</p>
+    </section>
+  ))}
+
+  <h2>How ratings work</h2>
+  <p>Each criterion is rated as:</p>
+  <ul>
+    <li><span class="rating-badge rating-yes">yes</span> — the product fully supports this</li>
+    <li><span class="rating-badge rating-partial">partial</span> — limited or incomplete support</li>
+    <li><span class="rating-badge rating-no">no</span> — not supported</li>
+  </ul>
+
+  <h2>How to contribute</h2>
+  <p>
+    This project lives on <a href="https://github.com/xiaoyuanzhu-com/do-i-own-my-data" target="_blank">GitHub</a>.
+    To add or update a product rating, submit a pull request with YAML files.
+    See the README for details.
+  </p>
+</Base>
