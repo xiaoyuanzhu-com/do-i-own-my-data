@@ -1,0 +1,41 @@
+---
+interface Props {
+  name: string;
+  logoUrl: string | null;
+  size?: number;
+}
+
+const { name, logoUrl, size = 24 } = Astro.props;
+
+// Deterministic color from product name
+function hashColor(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = ((hash % 360) + 360) % 360;
+  return `hsl(${hue}, 45%, 55%)`;
+}
+
+const initial = name.charAt(0).toUpperCase();
+const bgColor = hashColor(name);
+---
+
+{logoUrl ? (
+  <img
+    src={logoUrl}
+    alt={`${name} logo`}
+    width={size}
+    height={size}
+    class="product-logo"
+    loading="lazy"
+  />
+) : (
+  <span
+    class="product-logo-fallback"
+    style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.5)}px;background:${bgColor};`}
+    aria-hidden="true"
+  >
+    {initial}
+  </span>
+)}
