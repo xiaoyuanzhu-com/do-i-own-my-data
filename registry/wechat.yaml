@@ -3,3 +3,6 @@ website: https://www.wechat.com/
 description: Messaging, social media, and mobile payment super-app
 vendor: Tencent
 tags: [messaging, chat, social, payments]
+logo:
+  source: thesvg
+  slug: wechat

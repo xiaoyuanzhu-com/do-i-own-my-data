@@ -3,3 +3,6 @@ website: https://connect.garmin.com/
 description: Fitness tracking platform for Garmin wearables
 vendor: Garmin
 tags: [health, fitness, wearable, gps]
+logo:
+  source: thesvg
+  slug: garmin

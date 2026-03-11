@@ -3,3 +3,6 @@ website: https://photos.google.com/
 description: Cloud photo and video storage with AI organization
 vendor: Google
 tags: [photos, videos, cloud, storage]
+logo:
+  source: thesvg
+  slug: google-photos
