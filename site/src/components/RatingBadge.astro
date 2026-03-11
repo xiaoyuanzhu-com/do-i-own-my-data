@@ -1,0 +1,9 @@
+---
+interface Props {
+  rating: 'yes' | 'partial' | 'no' | undefined;
+}
+const { rating } = Astro.props;
+const label = rating ?? '—';
+const className = rating ? `rating-${rating}` : 'rating-none';
+---
+<span class={`rating-badge ${className}`}>{label}</span>

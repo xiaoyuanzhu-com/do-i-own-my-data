@@ -1,7 +1,39 @@
 ---
 import Base from '../layouts/Base.astro';
+import RatingBadge from '../components/RatingBadge.astro';
+import { loadProducts, loadCriteriaSchema } from '../data/products';
+
+const products = loadProducts();
+const criteriaSchema = loadCriteriaSchema();
+const CRITERIA_IDS = criteriaSchema.map(c => c.id);
+const CRITERIA_NAMES = criteriaSchema.map(c => c.name);
 ---
-<Base title="Home">
+<Base title="Products">
   <h1>Products</h1>
-  <p>Coming soon.</p>
+  <p>{products.length} products rated on data ownership.</p>
+
+  <div id="search-container"></div>
+
+  <div class="table-wrap">
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Vendor</th>
+          {CRITERIA_NAMES.map(name => <th>{name}</th>)}
+        </tr>
+      </thead>
+      <tbody id="product-list">
+        {products.map(product => (
+          <tr>
+            <td><a href={`/products/${product.slug}`}>{product.name}</a></td>
+            <td>{product.vendor}</td>
+            {CRITERIA_IDS.map(id => (
+              <td><RatingBadge rating={product.criteria[id]?.rating} /></td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </Base>

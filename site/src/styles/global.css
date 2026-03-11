@@ -121,6 +121,10 @@ h2 {
   color: #555;
 }
 
+.table-wrap {
+  overflow-x: auto;
+}
+
 /* Tables */
 table {
   width: 100%;
