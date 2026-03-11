@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .venv/
 .worktrees/
+site/node_modules/
+site/dist/
+site/.astro/
