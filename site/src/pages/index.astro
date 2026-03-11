@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import Search from '../components/Search.astro';
+import ProductLogo from '../components/ProductLogo.astro';
 import { loadProducts, loadCriteriaSchema } from '../data/products';
 
 const products = loadProducts();
@@ -27,7 +28,7 @@ const CRITERIA_NAMES = criteriaSchema.map(c => c.name);
       <tbody id="product-list">
         {products.map(product => (
           <tr>
-            <td><a href={`${import.meta.env.BASE_URL}products/${product.slug}`}>{product.name}</a></td>
+            <td><a href={`${import.meta.env.BASE_URL}products/${product.slug}`}><ProductLogo name={product.name} logoUrl={product.logoUrl} size={24} /> {product.name}</a></td>
             <td>{product.vendor}</td>
             {CRITERIA_IDS.map(id => (
               <td><RatingBadge rating={product.criteria[id]?.rating} /></td>
