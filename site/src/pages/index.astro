@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import RatingBadge from '../components/RatingBadge.astro';
+import Search from '../components/Search.astro';
 import { loadProducts, loadCriteriaSchema } from '../data/products';
 
 const products = loadProducts();
@@ -12,7 +13,7 @@ const CRITERIA_NAMES = criteriaSchema.map(c => c.name);
   <h1>Products</h1>
   <p>{products.length} products rated on data ownership.</p>
 
-  <div id="search-container"></div>
+  <Search />
 
   <div class="table-wrap">
     <table class="product-table">

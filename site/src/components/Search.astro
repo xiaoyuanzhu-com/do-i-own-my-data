@@ -1,0 +1,63 @@
+<div class="search-box">
+  <input
+    type="text"
+    id="search-input"
+    placeholder="Search products..."
+    autocomplete="off"
+  />
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  interface SearchItem {
+    slug: string;
+    name: string;
+    vendor: string;
+    tags: string[];
+    description: string;
+  }
+
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const tbody = document.getElementById('product-list') as HTMLTableSectionElement;
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+
+  const response = await fetch('/search-index.json');
+  const items: SearchItem[] = await response.json();
+
+  const fuse = new Fuse(items, {
+    keys: ['name', 'vendor', 'tags', 'description'],
+    threshold: 0.3,
+  });
+
+  input.addEventListener('input', () => {
+    const query = input.value.trim();
+    if (!query) {
+      rows.forEach(row => row.style.display = '');
+      return;
+    }
+    const results = new Set(fuse.search(query).map(r => r.item.slug));
+    rows.forEach((row, i) => {
+      row.style.display = results.has(items[i].slug) ? '' : 'none';
+    });
+  });
+</script>
+
+<style>
+  .search-box {
+    margin-bottom: 1rem;
+  }
+  #search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+  }
+  #search-input:focus {
+    border-color: #0969da;
+    box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.15);
+  }
+</style>

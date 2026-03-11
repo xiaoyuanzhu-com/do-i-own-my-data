@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "astro": "^6.0.2",
+    "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.1"
   },
   "devDependencies": {
