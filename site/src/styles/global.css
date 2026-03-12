@@ -56,7 +56,11 @@ html {
 
 body {
   margin: 0;
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
   min-width: 320px;
+  flex-direction: column;
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-body);
@@ -282,6 +286,7 @@ h3 {
 }
 
 .site-main {
+  flex: 1 0 auto;
   padding: 1.5rem 0 3rem;
 }
 
