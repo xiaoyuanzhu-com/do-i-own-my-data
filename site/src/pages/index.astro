@@ -37,115 +37,115 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
   title="Products"
   description="Browse product ratings in a simple expandable list."
 >
-  <div class="comparison-toolbar">
-    <div class="comparison-tools">
+  <section class="comparison-shell panel">
+    <div class="comparison-toolbar">
       <label class="list-filter" for="list-filter">
         <span class="list-filter-label">Filter</span>
         <input id="list-filter" type="search" placeholder="Product, vendor, tag" autocomplete="off" />
       </label>
       <p class="results-copy" data-filter-results hidden></p>
     </div>
-  </div>
 
-  <section class="comparison-stage panel">
-    <div class="comparison-head" aria-hidden="true">
-      <span>Product</span>
-      {criteriaSchema.map((criterion) => <span>{criterion.name}</span>)}
-    </div>
+    <div class="comparison-stage">
+      <div class="comparison-head" aria-hidden="true">
+        <span>Product</span>
+        {criteriaSchema.map((criterion) => <span>{criterion.name}</span>)}
+      </div>
 
-    <div class="comparison-list">
-      {products.map((product) => {
-        return (
-          <article
-            class="comparison-item"
-            data-list-item
-            data-slug={product.slug}
-            data-search={buildSearchText(product)}
-          >
-            <button
-              class="comparison-row"
-              type="button"
-              aria-expanded="false"
-              aria-controls={`detail-${product.slug}`}
-              data-row-trigger
+      <div class="comparison-list">
+        {products.map((product) => {
+          return (
+            <article
+              class="comparison-item"
+              data-list-item
+              data-slug={product.slug}
+              data-search={buildSearchText(product)}
             >
-              <span class="comparison-product">
-                <span class="product-identity">
-                  <ProductLogo
-                    name={product.name}
-                    logoUrl={product.logoUrl}
-                    container={product.logoContainer}
-                    size={44}
-                  />
-                  <span class="product-heading">
-                    <span class="product-name">{product.name}</span>
+              <button
+                class="comparison-row"
+                type="button"
+                aria-expanded="false"
+                aria-controls={`detail-${product.slug}`}
+                data-row-trigger
+              >
+                <span class="comparison-product">
+                  <span class="product-identity">
+                    <ProductLogo
+                      name={product.name}
+                      logoUrl={product.logoUrl}
+                      container={product.logoContainer}
+                      size={44}
+                    />
+                    <span class="product-heading">
+                      <span class="product-name">{product.name}</span>
+                    </span>
                   </span>
                 </span>
-              </span>
-              {criteriaSchema.map((criterion) => (
-                <span
-                  class="comparison-criterion"
-                  data-label={criterion.name}
-                  title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.rating ?? 'not rated'}`}
-                >
-                  <RatingBadge rating={product.criteria[criterion.id]?.rating} />
-                </span>
-              ))}
-              <span class="comparison-chevron" aria-hidden="true"></span>
-            </button>
+                {criteriaSchema.map((criterion) => (
+                  <span
+                    class="comparison-criterion"
+                    data-label={criterion.name}
+                    title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.rating ?? 'not rated'}`}
+                  >
+                    <RatingBadge rating={product.criteria[criterion.id]?.rating} />
+                  </span>
+                ))}
+                <span class="comparison-chevron" aria-hidden="true"></span>
+              </button>
 
-            <div class="comparison-detail" id={`detail-${product.slug}`}>
-              <div class="comparison-detail-inner">
-                <div class="comparison-cards">
-                  {criteriaGroups
-                    .filter((group) => hasVisibleNotes(product, group.ids))
-                    .map((group) => (
-                    <section class="comparison-card">
-                      <p class="comparison-card-label">{group.title}</p>
-                      <div class="comparison-note-list">
-                        {group.ids.map((criterionId) => {
-                          const criterion = criteriaById[criterionId];
-                          const rating = product.criteria[criterionId];
+              <div class="comparison-detail" id={`detail-${product.slug}`}>
+                <div class="comparison-detail-inner">
+                  <div class="comparison-cards">
+                    {criteriaGroups
+                      .filter((group) => hasVisibleNotes(product, group.ids))
+                      .map((group) => (
+                      <section class="comparison-card">
+                        <p class="comparison-card-label">{group.title}</p>
+                        <div class="comparison-note-list">
+                          {group.ids.map((criterionId) => {
+                            const criterion = criteriaById[criterionId];
+                            const rating = product.criteria[criterionId];
 
-                          return (
-                            <div class="comparison-note-item">
-                              <div class="comparison-note-head">
-                                <strong>{criterion?.name || criterionId}</strong>
-                                <RatingBadge rating={rating?.rating} />
+                            return (
+                              <div class="comparison-note-item">
+                                <div class="comparison-note-head">
+                                  <strong>{criterion?.name || criterionId}</strong>
+                                  <RatingBadge rating={rating?.rating} />
+                                </div>
+                                <p>{rating?.notes || 'No review notes yet.'}</p>
                               </div>
-                              <p>{rating?.notes || 'No review notes yet.'}</p>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
+                      </section>
+                    ))}
+
+                    <section class="comparison-card">
+                      <p class="comparison-card-label">Evidence</p>
+                      <div class="detail-stats">
+                        <span class="detail-stat">Reviewed {formatDate(product.date)}</span>
+                        {product.reviewer && <span class="detail-stat">{product.reviewer}</span>}
+                        {product.tags.slice(0, 3).map((tag) => <span class="detail-stat">{tag}</span>)}
+                      </div>
+                      <div class="comparison-links">
+                        {product.links.slice(0, 3).map((link) => (
+                          <a class="source-link" href={link.url} target="_blank" rel="noreferrer">
+                            <span class="source-label">{link.label}</span>
+                            <span class="source-note">Source</span>
+                          </a>
+                        ))}
                       </div>
                     </section>
-                  ))}
-
-                  <section class="comparison-card">
-                    <p class="comparison-card-label">Evidence</p>
-                    <div class="detail-stats">
-                      <span class="detail-stat">Reviewed {formatDate(product.date)}</span>
-                      {product.reviewer && <span class="detail-stat">{product.reviewer}</span>}
-                      {product.tags.slice(0, 3).map((tag) => <span class="detail-stat">{tag}</span>)}
-                    </div>
-                    <div class="comparison-links">
-                      {product.links.slice(0, 3).map((link) => (
-                        <a class="source-link" href={link.url} target="_blank" rel="noreferrer">
-                          <span class="source-label">{link.label}</span>
-                          <span class="source-note">Source</span>
-                        </a>
-                      ))}
-                    </div>
-                  </section>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        );
-      })}
-    </div>
+            </article>
+          );
+        })}
+      </div>
 
-    <p class="empty-state" data-filter-empty hidden>No products match that filter.</p>
+      <p class="empty-state" data-filter-empty hidden>No products match that filter.</p>
+    </div>
   </section>
 </Base>
 

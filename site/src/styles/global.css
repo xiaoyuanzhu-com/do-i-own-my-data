@@ -432,31 +432,37 @@ h3 {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.comparison-shell {
+  --comparison-row-height: 76px;
+  overflow: hidden;
+}
+
 .comparison-toolbar {
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.9rem;
+  min-height: var(--comparison-row-height);
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(92, 74, 57, 0.12);
+  background: transparent;
 }
 
 .comparison-stage {
   position: relative;
   z-index: 2;
-}
-
-.comparison-tools {
-  display: grid;
-  gap: 0.45rem;
-  min-width: min(100%, 320px);
-  justify-items: end;
+  padding: 0;
 }
 
 .list-filter {
-  display: grid;
-  gap: 0.38rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .list-filter-label {
@@ -468,8 +474,9 @@ h3 {
 }
 
 #list-filter {
-  width: min(100%, 320px);
-  padding: 0.9rem 1rem;
+  width: min(100%, 360px);
+  flex: 0 1 360px;
+  padding: 0.8rem 1rem;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.84);
@@ -485,11 +492,15 @@ h3 {
 }
 
 .comparison-head {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(88px, 0.7fr)) 2rem;
   gap: 1rem;
-  margin-top: 1rem;
-  padding: 0 1rem 0.65rem;
+  min-height: var(--comparison-row-height);
+  align-items: center;
+  margin-top: 0;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(92, 74, 57, 0.12);
   color: var(--muted);
   font-size: var(--text-xs);
   font-weight: 700;
@@ -510,7 +521,7 @@ h3 {
 }
 
 .comparison-item {
-  border-top: 1px solid rgba(92, 74, 57, 0.12);
+  border-top: 0;
 }
 
 .comparison-item[hidden] {
@@ -519,12 +530,15 @@ h3 {
 
 .comparison-row {
   width: 100%;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(88px, 0.7fr)) 2rem;
   gap: 1rem;
+  min-height: var(--comparison-row-height);
   align-items: center;
-  padding: 1rem;
+  padding: 0 1rem;
   border: 0;
+  border-top: 1px solid rgba(92, 74, 57, 0.12);
   background: transparent;
   color: inherit;
   text-align: left;
@@ -744,6 +758,9 @@ h3 {
 }
 
 .results-copy {
+  margin: 0;
+  text-align: right;
+  flex: 0 0 auto;
   min-height: 1.4rem;
   font-size: var(--text-sm);
 }
@@ -1123,14 +1140,19 @@ h3 {
   .product-card-head,
   .detail-heading,
   .site-nav,
-  .section-header,
-  .comparison-toolbar {
+  .section-header {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .comparison-tools {
-    justify-items: stretch;
+  .comparison-toolbar,
+  .list-filter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .comparison-toolbar {
+    min-height: 0;
   }
 
   .comparison-head,
@@ -1144,6 +1166,12 @@ h3 {
 
   .comparison-row {
     gap: 0.6rem;
+  }
+
+  #list-filter,
+  .results-copy {
+    width: 100%;
+    text-align: left;
   }
 
   .comparison-criterion::before {
@@ -1218,6 +1246,10 @@ h3 {
   .search-panel,
   .comparison-stage {
     padding: 1rem;
+  }
+
+  .comparison-stage {
+    padding: 0;
   }
 
   .product-identity,
