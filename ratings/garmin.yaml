@@ -1,80 +1,175 @@
-date: 2026-03-04
-reviewer: xiaoyuanzhu
+date: 2026-03-12
+models:
+  - claude-sonnet-4-20250514
 
 criteria:
   read:
-    rating: partial
-    notes: >
-      Garmin provides a full account data export via the Data Management portal at
-      garmin.com/account/datamanagement (introduced for GDPR compliance). You request a
-      download and receive a ZIP via email, typically within 48 hours. Individual activities
-      can be exported one at a time from Garmin Connect. The Connect Developer Program
-      offers Health API and Activity API with push/pull delivery within seconds of device
-      sync — but access is restricted to approved business developers only. Individual
-      users cannot get API keys for their own data. Unofficial libraries (garminconnect on
-      PyPI) exist but violate Garmin's ToS. Bulk export works well; programmatic and
-      real-time access is locked behind business approval.
+    value: "yes"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "yes"
+        checks:
+          - id: bulk-export
+            result: true
+            evidence: "Garmin provides a GDPR-compliant bulk data export via account settings (Request Data Export), which downloads all personal data, recorded activities, and summaries as a single zip file."
+            source: "https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8"
+          - id: covers-all-types
+            result: false
+            evidence: "The GDPR export covers most data types but reportedly limits exports to the last 5 years of data and excludes activities imported from third-party services."
+            source: "https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/145791/download-all-of-data-garmin-connect-holds-on-me-pursuant-gdpr"
+          - id: open-format
+            result: true
+            evidence: "The GDPR export contains mostly JSON files. Individual activities can be exported as FIT, TCX, or GPX files, all of which are open or documented formats."
+            source: "https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8"
+          - id: api-read
+            result: false
+            evidence: "The Garmin Connect Developer Program API is restricted to approved business developers only; individual users cannot obtain API access for personal data reading."
+            source: "https://developer.garmin.com/gc-developer-program/program-faq/"
+          - id: realtime-read
+            result: false
+            evidence: "Garmin offers webhook-based push notifications for near-real-time data delivery, but this is only available through the business-restricted Developer Program API."
+            source: "https://developer.garmin.com/gc-developer-program/activity-api/"
+    notes: "Garmin provides a comprehensive GDPR bulk export in open formats (JSON, FIT, GPX, TCX), though it may not cover all historical data. The API is business-only."
 
   write:
-    rating: "no"
-    notes: >
-      Garmin Connect does not support importing activities or health data from external
-      sources. There is no import API, no bulk upload feature, and no way to push data
-      into Garmin Connect from outside the Garmin device ecosystem. The developer APIs
-      are read-only. You cannot migrate data from another fitness platform into Garmin.
-      The only way data enters Garmin Connect is from a Garmin device or the Garmin
-      Connect app's manual activity creation.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: import-from-file
+            result: true
+            evidence: "Garmin Connect allows manual upload of individual activity files in FIT, GPX, and TCX formats through the Import link on the activities page."
+            source: "https://support.garmin.com/en-US/?faq=Ht3ZP52Kju075uKvqTqu99"
+          - id: import-from-service
+            result: false
+            evidence: "Garmin Connect does not offer a direct migration or import feature from other fitness services."
+          - id: api-write
+            result: false
+            evidence: "The Garmin Connect Developer Program API includes a Training API that supports writing workouts and courses, but access is restricted to approved business developers only."
+            source: "https://developer.garmin.com/gc-developer-program/training-api/"
+          - id: bulk-upload
+            result: false
+            evidence: "Garmin Connect does not support batch upload of multiple files; activities must be imported one at a time through the web interface."
+            source: "https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/75856/importing-gpx-or-csv-files"
+    notes: "Users can import individual activity files (FIT/GPX/TCX) but there is no bulk upload, no service migration, and no individual API write access."
 
   understand:
-    rating: "yes"
-    notes: >
-      Activities export in FIT (Garmin's binary but openly documented format with a
-      public SDK), GPX (open XML standard), and TCX (Garmin's XML extension). The bulk
-      data export includes original FIT files and activity summaries as CSV. All three
-      activity formats are widely supported by fitness platforms and tools. The FIT SDK
-      is publicly available for parsing. Data is well-structured and interoperable.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: open-format
+            result: true
+            evidence: "Exported data uses open formats: JSON for the GDPR bulk export, and FIT/GPX/TCX for individual activities. GPX and TCX are XML-based open standards."
+            source: "https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8"
+          - id: documented-schema
+            result: false
+            evidence: "The FIT SDK provides protocol documentation but there is no comprehensive public schema documentation for the GDPR export JSON structure or all data fields."
+            source: "https://developer.garmin.com/fit/protocol/"
+          - id: standard-schema
+            result: false
+            evidence: "FIT is a Garmin-created format, not an industry-wide standard. The bulk export JSON uses a Garmin-specific schema with no industry-standard equivalent."
+            source: "https://developer.garmin.com/fit/protocol/"
+          - id: human-readable
+            result: true
+            evidence: "JSON exports are human-readable, and GPX/TCX files are XML-based and easily interpreted. FIT files are binary but can be converted using freely available tools and the FIT SDK."
+            source: "https://developer.garmin.com/fit/cookbook/decoding-activity-files/"
+    notes: "Data is exported in open formats and is human-readable, but the schema is not fully documented publicly and uses Garmin-specific structures."
 
   delete:
-    rating: partial
-    notes: >
-      You can delete individual activities and daily monitoring data from Garmin Connect.
-      Full account deletion is available and removes data from Garmin Connect, Garmin
-      Express, and linked services. However, Garmin's retention policy on backups and
-      processing systems is not fully transparent — the support page notes it "may take
-      some time" for complete removal.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: granular-delete
+            result: true
+            evidence: "Users can delete individual activities from the Garmin Connect activities page by clicking the trash icon next to each activity."
+            source: "https://support.garmin.com/en-US/?faq=uj0Ewfb58w1DGR0WI87gB9"
+          - id: full-delete
+            result: true
+            evidence: "Users can delete their entire Garmin account, which removes all data from Garmin Connect and all linked Garmin services."
+            source: "https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6"
+          - id: clear-retention
+            result: false
+            evidence: "Garmin's privacy policy states data is kept 'as long as it is needed' without specifying concrete retention periods or timelines."
+            source: "https://www.garmin.com/en-US/privacy/connect/policy/"
+          - id: backup-removal
+            result: false
+            evidence: "No public documentation states a specific timeline for removal of deleted data from backups. Garmin states it 'may take some time' for complete removal."
+            source: "https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6"
+    notes: "Garmin supports both granular activity deletion and full account deletion, but lacks a clear published retention policy with specific timelines."
 
   ownership:
-    rating: "no"
-    notes: >
-      Garmin's privacy policy states they collect fitness and health data to provide
-      their services. Garmin does not sell personal data to third parties. Data sharing
-      is limited to service providers acting on Garmin's behalf. Garmin does not use
-      individual user data for advertising targeting. Aggregated and de-identified data
-      may be used for research and product improvement, but individual data is not
-      monetized or licensed to third parties.
+    value: "no"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "no"
+        checks:
+          - id: broad-license
+            result: false
+            evidence: "Garmin's consumer terms grant a limited license for using their software but do not claim a broad license over user-generated fitness data."
+            source: "https://www.garmin.com/en-US/legal/terms-of-use/"
+          - id: ai-training
+            result: false
+            evidence: "No evidence was found that Garmin uses individual user data for AI or ML training. Their privacy policy does not mention AI training on personal data."
+            source: "https://www.garmin.com/en-US/privacy/connect/policy/"
+          - id: data-selling
+            result: false
+            evidence: "Garmin states they do not sell personal data. They share de-identified aggregate data for research, but not identifiable user data."
+            source: "https://www.garmin.com/en-US/privacy/connect/policy/"
+          - id: ad-targeting
+            result: false
+            evidence: "Garmin does not share personal information for advertising purposes with third parties, and their business model is hardware-based rather than ad-driven."
+            source: "https://www.garmin.com/en-US/privacy/connect/policy/"
+    notes: "Garmin has user-friendly data ownership terms. They do not claim broad licenses over user health data, do not sell personal data, and do not use data for advertising."
 
   agent_friendly:
-    rating: "no"
-    notes: >
-      The developer APIs (Health API, Activity API) are restricted to approved business
-      developers — individual users cannot obtain API credentials for their own data.
-      The bulk export requires manual request through the web portal and email delivery
-      (48-hour wait). There is no personal-use API, no OAuth flow for individual users,
-      and no way to automate data retrieval. An AI agent would have to rely on unofficial
-      scraping libraries that violate Garmin's ToS.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: documented-api
+            result: false
+            evidence: "The Garmin Connect Developer Program API is documented but restricted to approved business developers. Individual users cannot access the API."
+            source: "https://developer.garmin.com/gc-developer-program/program-faq/"
+          - id: standard-auth
+            result: true
+            evidence: "The Garmin Connect API uses OAuth 2.0 for authentication, which is an industry-standard protocol."
+            source: "https://developer.garmin.com/gc-developer-program/"
+          - id: no-anti-automation
+            result: false
+            evidence: "Garmin does not officially support third-party scripts accessing Connect data, and the API requires business approval."
+            source: "https://github.com/pe-st/garmin-connect-export"
+          - id: machine-readable-output
+            result: true
+            evidence: "The API returns data in JSON format, and exported files are available in machine-readable formats (FIT, GPX, TCX, JSON)."
+            source: "https://developer.garmin.com/gc-developer-program/health-api/"
+          - id: programmatic-crud
+            result: false
+            evidence: "Even for approved business developers, the API primarily supports read operations and limited write. Full CRUD including delete is not available via API."
+            source: "https://developer.garmin.com/gc-developer-program/"
+    notes: "A documented API exists with standard auth and machine-readable output, but it is restricted to business developers only. Individual users have no official programmatic access."
 
 links:
-  - label: Garmin Connect Data Export FAQ
-    url: https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8
-  - label: Garmin Account Data Management Portal
-    url: https://www.garmin.com/account/datamanagement
-  - label: Garmin Connect Developer Program Overview
-    url: https://developer.garmin.com/gc-developer-program/
-  - label: Health API Documentation
-    url: https://developer.garmin.com/gc-developer-program/health-api/
-  - label: Activity API Documentation
-    url: https://developer.garmin.com/gc-developer-program/activity-api/
-  - label: Deleting Your Garmin Account
-    url: https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6
-  - label: Garmin Privacy Policy
-    url: https://www.garmin.com/en-US/privacy/global/
+  - label: "Garmin Connect Data Export FAQ"
+    url: "https://support.garmin.com/en-US/?faq=W1TvTPW8JZ6LfJSfK512Q8"
+  - label: "Garmin Connect Delete Data FAQ"
+    url: "https://support.garmin.com/en-US/?faq=uj0Ewfb58w1DGR0WI87gB9"
+  - label: "Garmin Account Deletion FAQ"
+    url: "https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6"
+  - label: "Garmin Connect Privacy Policy"
+    url: "https://www.garmin.com/en-US/privacy/connect/policy/"
+  - label: "Garmin Terms of Use"
+    url: "https://www.garmin.com/en-US/legal/terms-of-use/"
+  - label: "Garmin Connect Developer Program Overview"
+    url: "https://developer.garmin.com/gc-developer-program/"
+  - label: "Garmin Connect Developer Program FAQ"
+    url: "https://developer.garmin.com/gc-developer-program/program-faq/"
+  - label: "Garmin FIT SDK Protocol Documentation"
+    url: "https://developer.garmin.com/fit/protocol/"
+  - label: "Garmin Upload Activity FAQ"
+    url: "https://support.garmin.com/en-US/?faq=Ht3ZP52Kju075uKvqTqu99"

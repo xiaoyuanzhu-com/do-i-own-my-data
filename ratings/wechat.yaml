@@ -1,84 +1,165 @@
-date: 2026-03-04
-reviewer: xiaoyuanzhu
+date: 2026-03-12
+models:
+  - claude-sonnet-4-20250514
 
 criteria:
   read:
-    rating: "no"
-    notes: >
-      WeChat provides no meaningful way to read your data outside the app. There is no
-      user-facing API — the Official Account API and Mini Program API are for businesses
-      only. The limited personal data export (Me > Settings > Privacy > My Information)
-      only covers Moments posts, Favorites, and basic account info — chat history is
-      excluded because WeChat states it is not stored on servers. The desktop "Backup and
-      Restore" saves chat history in a proprietary encrypted format that can only be
-      restored within WeChat itself. There is no webhook, streaming API, or real-time
-      access. Unofficial tools exist (wechat-export on GitHub) but require rooted/
-      jailbroken devices and violate ToS.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: bulk-export
+            result: true
+            evidence: "WeChat offers a personal data export feature via Settings > Privacy > My Information & Authorizations > Export Personal Data. Data is delivered as a password-protected zip file within three business days."
+            source: "https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=180502NFZfIN180502v2eU7R"
+          - id: covers-all-types
+            result: false
+            evidence: "The export only covers Moments data, Favorites data, and account information. Chat history is explicitly excluded because it is not stored on WeChat servers."
+            source: "https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=171213ezniaf1712137znmer&lang=en&plat=2&Channel=helpcenter"
+          - id: open-format
+            result: false
+            evidence: "WeChat delivers exported data as a password-protected zip file, but does not publicly document the format of files inside the archive."
+            source: "https://cs.help.wechat.com/hc/en-us/articles/11916362921871-FAQ-for-Data-Export"
+          - id: api-read
+            result: false
+            evidence: "WeChat's APIs are designed for Official Account and Mini Program operators, not individual end users reading their personal data."
+            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
+          - id: realtime-read
+            result: false
+            evidence: "No real-time or streaming read access is available for individual users to access their personal data programmatically."
+    notes: "WeChat offers a limited bulk export of server-side data (Moments, Favorites, account info) but excludes chat history. No individual-facing API for reading personal data."
 
   write:
-    rating: "no"
-    notes: >
-      There is no way to import data into WeChat from outside. No import API, no bulk
-      upload, no migration tool from other messaging platforms. The only way to get
-      chat history into WeChat is via the "Backup and Restore" feature between WeChat
-      installations on different devices — never from an external source. You cannot
-      import contacts, messages, or media from any other service.
+    value: "no"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "no"
+        checks:
+          - id: import-from-file
+            result: false
+            evidence: "WeChat does not support importing data from files such as CSV or JSON. There is no mechanism to import chat history or other data from external file formats."
+          - id: import-from-service
+            result: false
+            evidence: "WeChat does not support migrating data from other messaging services. The only migration supported is transferring WeChat chat history between WeChat devices."
+            source: "https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&lang=en&plat=ios&id=1208117b2mai150512qqIbiQ&Channel=helpcenter"
+          - id: api-write
+            result: false
+            evidence: "WeChat's APIs allow Official Account operators to send messages to followers, but individual users cannot write personal data programmatically."
+            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
+          - id: bulk-upload
+            result: false
+            evidence: "No bulk upload mechanism exists for individual users to import data into WeChat."
+    notes: "WeChat is essentially a closed system for data ingestion. No file import, no service migration, and no API write access for individual users."
 
   understand:
-    rating: "no"
-    notes: >
-      The official personal data export is delivered as a password-protected ZIP with
-      undocumented internal formats. The desktop chat backup uses a proprietary encrypted
-      format readable only by WeChat. There is no JSON, CSV, XML, or any standard format
-      offered. Third-party tools can extract chat databases from rooted Android or
-      jailbroken iOS devices into HTML or JSON, but this requires accessing WeChat's
-      encrypted SQLite databases — not an officially supported workflow. Even when
-      extracted, the schema is undocumented and reverse-engineered.
+    value: "no"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "no"
+        checks:
+          - id: open-format
+            result: false
+            evidence: "The exported data comes as a password-protected zip, but WeChat does not document or guarantee that the contained files are in open, non-proprietary formats."
+            source: "https://cs.help.wechat.com/hc/en-us/articles/11916362921871-FAQ-for-Data-Export"
+          - id: documented-schema
+            result: false
+            evidence: "WeChat does not publish a schema or data dictionary for the exported personal data package."
+          - id: standard-schema
+            result: false
+            evidence: "There is no indication that WeChat's exported data follows any industry-standard schema for messaging or social media data."
+          - id: human-readable
+            result: false
+            evidence: "Without documented formats or schemas, and with password-protected proprietary packaging, the exported data is not readily human-readable without reverse engineering."
+    notes: "WeChat provides no documentation on the format or schema of exported data. The lack of transparency makes it difficult to interpret the data."
 
   delete:
-    rating: partial
-    notes: >
-      Users can delete individual messages from their own view within chats, though this
-      does not remove them from the recipient's device. Full account deletion is available
-      via Me > Settings > Account Security > WeChat Security Center > Account Cancellation,
-      with a cooling-off period of 15 days (Android) or 60 days (iOS). Account deletion
-      removes associated data, though aggregated registration data is retained for spam
-      prevention and login data is kept up to 90 days. There is no granular "delete all
-      my data but keep my account" option.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: granular-delete
+            result: true
+            evidence: "Users can long-press individual messages and delete them, select multiple messages for batch deletion, and clear entire chat conversations."
+            source: "https://cs.help.wechat.com/hc/en-us/articles/11917925363343-How-to-Delete-My-Chat-History"
+          - id: full-delete
+            result: true
+            evidence: "Users can delete their entire WeChat account through Settings. After account deletion, it may take up to 60 days for all data to be fully removed."
+            source: "https://www.oreateai.com/blog/a-stepbystep-guide-to-closing-your-wechat-account/2fa3245fc68c643c19ffa0dfa0bc5d03"
+          - id: clear-retention
+            result: false
+            evidence: "WeChat's privacy policy states data is not retained longer than necessary but does not specify concrete retention periods for most data types."
+            source: "https://www.wechat.com/en/privacy_policy.html"
+          - id: backup-removal
+            result: false
+            evidence: "WeChat states that deleted data may still exist in backups or caches of other users and third parties. No stated timeline for backup removal."
+            source: "https://www.wechat.com/en/privacy_policy.html"
+    notes: "WeChat supports granular and full account deletion, but lacks a clear published retention policy with specific timelines."
 
   ownership:
-    rating: "yes"
-    notes: >
-      Tencent's terms grant the company broad rights over user content. WeChat's privacy
-      policy allows data to be used for service improvement, advertising, and shared with
-      Tencent group companies. In China, content posted on WeChat may be subject to
-      government access requests. WeChat collects extensive metadata (contacts, location,
-      device info, usage patterns). The platform's business model relies partly on
-      targeted advertising using user data. Content shared on Moments or groups may be
-      analyzed for content moderation and recommendation purposes.
+    value: "yes"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "yes"
+        checks:
+          - id: broad-license
+            result: true
+            evidence: "WeChat's ToS grants Tencent a perpetual, non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use user content for providing, promoting, developing, and improving WeChat and other services."
+            source: "https://www.wechat.com/en/service_terms.html"
+          - id: ai-training
+            result: true
+            evidence: "The broad license covering 'developing and trying to improve WeChat and other services' encompasses AI/ML training without explicit opt-in."
+            source: "https://www.wechat.com/en/service_terms.html"
+          - id: data-selling
+            result: false
+            evidence: "WeChat's privacy policy does not explicitly state it sells user data to third parties. However, data is shared with affiliates within the Tencent ecosystem."
+            source: "https://www.wechat.com/en/privacy_policy.html"
+          - id: ad-targeting
+            result: true
+            evidence: "WeChat Ads uses user behavioral data, interests, demographics, location, and Mini Program usage to enable precision-targeted advertising."
+            source: "https://www.w-4.ch/en/wechat-ads"
+    notes: "WeChat's ToS grants Tencent a very broad, perpetual, sub-licensable license over user content, combined with extensive use of user data for AI-powered ad targeting."
 
   agent_friendly:
-    rating: "no"
-    notes: >
-      WeChat is fundamentally hostile to automation for individual users. There is no
-      personal-use API, no OAuth for user data access, no documented data formats, and
-      no way to programmatically read or write personal messages. The Official Account
-      API requires a verified Chinese business entity. Unofficial automation tools risk
-      account suspension. An AI agent has zero viable path to interact with a user's
-      WeChat data through sanctioned means.
+    value: "no"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "no"
+        checks:
+          - id: documented-api
+            result: false
+            evidence: "WeChat's documented APIs (Official Account API, Mini Program API) are for business operators, not individual users. Full API access requires a Verified Service Account with a Chinese business entity."
+            source: "https://kawo.com/en/blog/how-to-open-a-wechat-official-account-oa-and-apply-for-verification"
+          - id: standard-auth
+            result: true
+            evidence: "The WeChat API uses OAuth 2.0 for authentication, which is a standard protocol."
+            source: "https://wechat-oauth2.readthedocs.io/en/latest/api.html"
+          - id: no-anti-automation
+            result: false
+            evidence: "WeChat actively restricts automation and has anti-bot measures. The platform restricts unofficial API usage and requires verified business accounts for programmatic access."
+          - id: machine-readable-output
+            result: true
+            evidence: "The WeChat Official Account API returns JSON responses, which is a standard machine-readable format."
+            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
+          - id: programmatic-crud
+            result: false
+            evidence: "Individual users cannot perform read, write, or delete operations on their personal data via API. The API is limited to business-facing operations."
+            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
+    notes: "While WeChat has documented APIs with standard auth and JSON output, these are exclusively for business operators. No programmatic CRUD access exists for personal data."
 
 links:
-  - label: WeChat Privacy Policy
-    url: https://www.wechat.com/en/privacy_policy.html
-  - label: WeChat Help — Data Export FAQ
-    url: https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=171213ezniaf1712137znmer&lang=en&plat=2&Channel=helpcenter
-  - label: WeChat Help — How to Port Your Data
-    url: https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=180502NFZfIN180502v2eU7R
-  - label: WeChat Help — Account Deletion
-    url: https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=180323e2Ermm180323yqauAZ&lang=en&plat=ios&Channel=helpcenter
-  - label: WeChat Official Account API Documentation
-    url: https://developers.weixin.qq.com/miniprogram/en/dev/framework/app-service/api.html
-  - label: wechat-export — Unofficial chat history exporter (GitHub)
-    url: https://github.com/luin/wechat-export
-  - label: Tencent Terms of Service
-    url: https://www.tencent.com/en-us/service-agreement.html
+  - label: "WeChat Terms of Service"
+    url: "https://www.wechat.com/en/service_terms.html"
+  - label: "WeChat Privacy Policy"
+    url: "https://www.wechat.com/en/privacy_policy.html"
+  - label: "WeChat Data Export FAQ"
+    url: "https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=171213ezniaf1712137znmer&lang=en&plat=2&Channel=helpcenter"
+  - label: "WeChat Data Portability"
+    url: "https://help.wechat.com/cgi-bin/micromsg-bin/oshelpcenter?opcode=2&id=180502NFZfIN180502v2eU7R"
+  - label: "WeChat Official Account Developer Docs"
+    url: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
+  - label: "Mozilla Privacy Not Included - WeChat"
+    url: "https://www.mozillafoundation.org/en/privacynotincluded/wechat/"
+  - label: "WeChat Advertising Solutions"
+    url: "https://www.w-4.ch/en/wechat-ads"

@@ -1,81 +1,178 @@
-date: 2026-03-04
-reviewer: xiaoyuanzhu
+date: 2026-03-12
+models:
+  - claude-sonnet-4-20250514
 
 criteria:
   read:
-    rating: partial
-    notes: >
-      Apple Health supports bulk export via the Health app's "Export All Health Data"
-      feature, producing a ZIP with export.xml (all health samples) and export_cda.xml
-      (clinical documents). No third-party tool is needed. However, there is no web API
-      or server-side API — HealthKit only works on-device for iOS/watchOS apps. HealthKit
-      supports HKObserverQuery with background delivery for near-real-time on-device
-      notifications, but there are no webhooks, no push to external servers, and no
-      streaming API. Update frequency is limited (~4 background updates/hour on watchOS).
-      The export is complete, but programmatic and real-time access is device-only.
+    value: "yes"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "yes"
+        checks:
+          - id: bulk-export
+            result: true
+            evidence: "Apple Health provides a built-in 'Export All Health Data' feature accessible from the user profile in the Health app, producing a ZIP archive containing XML files."
+            source: "https://support.apple.com/guide/iphone/share-your-health-data-iph5ede58c3d/ios"
+          - id: covers-all-types
+            result: false
+            evidence: "The export covers most data types but notably excludes medication data, raw sensor data (e.g., raw PPG signals), and some Apple Watch-specific records."
+            source: "https://www.themomentum.ai/blog/what-you-can-and-cant-do-with-apple-healthkit-data"
+          - id: open-format
+            result: true
+            evidence: "Health data is exported in XML format (export.xml and export_cda.xml), which is an open standard that can be parsed by any XML-capable tool."
+            source: "https://applehealthdata.com/export-apple-health-data/"
+          - id: api-read
+            result: true
+            evidence: "The HealthKit framework provides a comprehensive on-device API for reading all authorized health data types programmatically, including queries, observer queries, and background delivery."
+            source: "https://developer.apple.com/documentation/healthkit/reading-data-from-healthkit"
+          - id: realtime-read
+            result: true
+            evidence: "HKObserverQuery provides near-real-time monitoring of the HealthKit store with background delivery support, updating apps when new samples are saved."
+            source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
+    notes: "Apple Health offers robust bulk export in XML and a comprehensive on-device API, though the export does not cover every data type (notably medications and raw sensor data)."
 
   write:
-    rating: partial
-    notes: >
-      HealthKit allows third-party apps to write health data (steps, workouts, heart rate,
-      etc.) with explicit user permission per data type. However, this is on-device only —
-      there is no web API or server-side write capability. There is no built-in "import from
-      file" or "import from another service" feature in the Health app itself. To bring data
-      in, you need a third-party iOS app that reads your file and writes to HealthKit.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: import-from-file
+            result: false
+            evidence: "Apple Health has no native file import feature. Third-party apps like Health CSV Importer exist in the App Store but are not built-in functionality."
+            source: "https://discussions.apple.com/thread/254202774"
+          - id: import-from-service
+            result: true
+            evidence: "Apple Health can receive data from connected third-party apps and services (e.g., fitness trackers, medical providers via Health Records) through the HealthKit framework integration."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: api-write
+            result: true
+            evidence: "The HealthKit framework provides a documented API for writing health data programmatically, allowing authorized apps to save samples, workouts, and other data types to the Health store."
+            source: "https://developer.apple.com/documentation/healthkit/samples/reading_and_writing_healthkit_series_data"
+          - id: bulk-upload
+            result: false
+            evidence: "There is no native bulk upload feature. While the HealthKit API can write multiple samples, there is no built-in bulk import from files."
+            source: "https://discussions.apple.com/thread/250998087"
+    notes: "HealthKit provides a write API and supports data from connected services, but there is no native file import or bulk upload capability without third-party apps."
 
   understand:
-    rating: partial
-    notes: >
-      Exported data uses XML, an open format, but the schema for export.xml is
-      Apple-proprietary — there is no published XSD or formal specification. Clinical
-      records use HL7 CDA standard. Health Records from providers use FHIR R4 (an open
-      healthcare interoperability standard). The core fitness and wellness data in
-      export.xml, while readable, does not follow an industry-standard schema and
-      requires custom parsing. Common data types (steps, heart rate) are straightforward
-      to interpret; sleep and nutrition schemas are less standardized across platforms.
+    value: "yes"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "yes"
+        checks:
+          - id: open-format
+            result: true
+            evidence: "Exported data uses XML, an open standard format. The clinical records portion uses CDA (Clinical Document Architecture), also an open HL7 standard."
+            source: "https://applehealthdata.com/export-apple-health-data/"
+          - id: documented-schema
+            result: true
+            evidence: "Apple provides comprehensive public documentation of all HealthKit data types, sample types, and their properties through the Apple Developer Documentation portal."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: standard-schema
+            result: false
+            evidence: "The main export XML uses Apple's proprietary schema, not an industry-standard like FHIR or HL7. The CDA export portion does follow HL7 CDA standards, but the bulk of health/fitness data uses Apple's own format."
+            source: "https://developer.apple.com/documentation/healthkit/hkcdadocument"
+          - id: human-readable
+            result: true
+            evidence: "The XML export is human-readable with clear element names like 'Record', 'Workout', 'ActivitySummary' with attributes for type, value, unit, dates, and source."
+            source: "https://gist.github.com/hoffa/936db2bb85e134709cd263dd358ca309"
+    notes: "Exported data is in open XML format with well-documented schema and human-readable structure, though the schema is Apple-proprietary rather than an industry standard like FHIR."
 
   delete:
-    rating: "yes"
-    notes: >
-      You can delete health data granularly or in bulk. In the Health app, navigate to a
-      data category, tap "Show All Data," then use Edit to delete individual records or
-      "Delete All" for that category. You can also delete all data from a specific source
-      device via Settings > Health > Data Access & Devices. To remove data from iCloud,
-      disable Health sync and delete from iCloud storage. Deleting the Health app alone
-      does not remove data.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: granular-delete
+            result: true
+            evidence: "Users can delete individual records by navigating to specific health categories, tapping 'Show All Data', and removing individual entries."
+            source: "https://support.apple.com/en-us/108779"
+          - id: full-delete
+            result: true
+            evidence: "Users can delete all data for a category via 'Delete All', and can remove all health data from iCloud via Settings > iCloud > Health > Manage Storage > Delete Data."
+            source: "https://support.apple.com/en-us/108779"
+          - id: clear-retention
+            result: false
+            evidence: "Apple does not publish a formal data retention policy with specific timelines for backup removal or post-deletion retention for health data."
+            source: "https://www.apple.com/legal/privacy/data/en/health-app/"
+          - id: backup-removal
+            result: false
+            evidence: "While deleting from iCloud removes data across synced devices, Apple does not explicitly state a timeline for removal from iCloud backups."
+            source: "https://discussions.apple.com/thread/254533361"
+    notes: "Apple Health supports both granular and full deletion of health data, but lacks a formal published retention policy and clear backup removal guarantees."
 
   ownership:
-    rating: "no"
-    notes: >
-      Apple's privacy policy states that health data is encrypted end-to-end when synced
-      via iCloud. Apple does not access, sell, or use HealthKit data for advertising or
-      AI training. Health data is processed on-device. Third-party apps that access
-      HealthKit must comply with Apple's developer guidelines prohibiting use of health
-      data for advertising, data brokering, or purposes beyond health/fitness.
+    value: "no"
+    by_model:
+      claude-sonnet-4-20250514:
+        value: "no"
+        checks:
+          - id: broad-license
+            result: false
+            evidence: "Apple's privacy policy states health data is used only as 'reasonably necessary to provide products and services requested.' Health data is end-to-end encrypted and Apple cannot access it."
+            source: "https://www.apple.com/legal/privacy/consumer-health-personal-data/en-ww/"
+          - id: ai-training
+            result: false
+            evidence: "Apple explicitly states 'your private personal data is not used to train our foundational AI models' and that foundation models are trained using licensed, public, and synthetic data only."
+            source: "https://www.apple.com/legal/ai-regulations/training-data/"
+          - id: data-selling
+            result: false
+            evidence: "Apple states it does not share personal data with third parties for advertising or monetization, and health data is end-to-end encrypted."
+            source: "https://www.apple.com/privacy/"
+          - id: ad-targeting
+            result: false
+            evidence: "Apple explicitly confirms that Health app data is not used by Apple Search Ads to deliver ads."
+            source: "https://www.apple.com/legal/privacy/data/en/apple-advertising/"
+    notes: "Apple has strong privacy commitments for health data: no broad license, no AI training on personal data, no data selling, and no ad targeting. Users retain ownership."
 
   agent_friendly:
-    rating: "no"
-    notes: >
-      There is no web API, REST endpoint, or server-side programmatic access. All data
-      access requires an iOS/watchOS app running on the user's device through HealthKit.
-      An AI agent cannot directly query Apple Health from a server or desktop application.
-      The bulk export is manual (tap in the Health app), not automatable. Building an
-      agent would require a companion iOS app as a bridge, adding significant friction.
+    value: partial
+    by_model:
+      claude-sonnet-4-20250514:
+        value: partial
+        checks:
+          - id: documented-api
+            result: true
+            evidence: "HealthKit is a well-documented API available to any Apple Developer Program member ($99/year), with comprehensive documentation on developer.apple.com."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: standard-auth
+            result: false
+            evidence: "HealthKit uses on-device iOS permission dialogs for authorization, not standard web authentication like OAuth or API keys. There is no server-side API or token-based auth."
+            source: "https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data"
+          - id: no-anti-automation
+            result: true
+            evidence: "HealthKit has no CAPTCHAs or anti-bot barriers. Background delivery is supported for automated data collection."
+            source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
+          - id: machine-readable-output
+            result: true
+            evidence: "HealthKit returns structured data objects that are fully machine-readable. The export produces XML, and the API returns typed Swift/Objective-C objects."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: programmatic-crud
+            result: false
+            evidence: "HealthKit requires a native iOS app to access data — there is no web API, REST API, or server-side programmatic access."
+            source: "https://www.themomentum.ai/blog/what-you-can-and-cant-do-with-apple-healthkit-data"
+    notes: "HealthKit is well-documented and returns machine-readable data, but it is an on-device iOS-only framework with no web API, no standard OAuth auth, and requires a native app."
 
 links:
-  - label: HealthKit Framework Documentation
-    url: https://developer.apple.com/documentation/healthkit
-  - label: Reading Data from HealthKit
-    url: https://developer.apple.com/documentation/healthkit/reading-data-from-healthkit
-  - label: HKObserverQuery (Real-time Monitoring)
-    url: https://developer.apple.com/documentation/healthkit/hkobserverquery
-  - label: Background Delivery Entitlement
-    url: https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.healthkit.background-delivery
-  - label: Manage Health Data on iPhone — Apple Support
-    url: https://support.apple.com/en-us/108779
-  - label: Accessing Health Records (FHIR)
-    url: https://developer.apple.com/documentation/healthkit/accessing-health-records
-  - label: Health and Fitness Apps — Apple Developer
-    url: https://developer.apple.com/health-fitness/
-  - label: Apple Privacy Policy
-    url: https://www.apple.com/legal/privacy/
+  - label: "Apple Health & Privacy"
+    url: "https://www.apple.com/legal/privacy/data/en/health-app/"
+  - label: "HealthKit Documentation"
+    url: "https://developer.apple.com/documentation/healthkit"
+  - label: "Apple Consumer Health Privacy Policy"
+    url: "https://www.apple.com/legal/privacy/consumer-health-personal-data/en-ww/"
+  - label: "Manage Health Data - Apple Support"
+    url: "https://support.apple.com/en-us/108779"
+  - label: "Apple Privacy Overview"
+    url: "https://www.apple.com/privacy/"
+  - label: "HealthKit Reading Data"
+    url: "https://developer.apple.com/documentation/healthkit/reading-data-from-healthkit"
+  - label: "HKObserverQuery Documentation"
+    url: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
+  - label: "Apple AI Training Data Policy"
+    url: "https://www.apple.com/legal/ai-regulations/training-data/"
+  - label: "Share Health Data - Apple Support"
+    url: "https://support.apple.com/guide/iphone/share-your-health-data-iph5ede58c3d/ios"
+  - label: "Apple Health Export Guide"
+    url: "https://applehealthdata.com/export-apple-health-data/"
