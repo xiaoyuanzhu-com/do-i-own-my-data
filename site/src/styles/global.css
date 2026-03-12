@@ -1,3 +1,5 @@
+@import "@fontsource-variable/manrope";
+
 :root {
   --bg: #f4efe7;
   --bg-accent: rgba(138, 113, 87, 0.08);
@@ -25,6 +27,20 @@
   --no-text: #8e2f39;
   --none-bg: #e7e1d7;
   --none-text: #5c534a;
+  --font-sans: "Manrope Variable", "Avenir Next", "Segoe UI Variable", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "Monaco", "Cascadia Code", monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --display-sm: clamp(1.75rem, 3.2vw, 2.35rem);
+  --display-md: clamp(2.4rem, 5vw, 3.75rem);
+  --leading-tight: 1.1;
+  --leading-body: 1.65;
+  --tracking-tight: -0.035em;
+  --tracking-label: 0.06em;
 }
 
 *,
@@ -35,18 +51,22 @@
 
 html {
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  font-family: "Avenir Next", "Segoe UI Variable", "Helvetica Neue", sans-serif;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  letter-spacing: -0.01em;
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(31, 91, 79, 0.12), transparent 28rem),
     radial-gradient(circle at top right, rgba(154, 90, 49, 0.12), transparent 26rem),
     linear-gradient(180deg, #f8f3ec 0%, var(--bg) 24%, #efe6da 100%);
+  -webkit-font-smoothing: antialiased;
 }
 
 img {
@@ -68,7 +88,7 @@ code {
   border-radius: 999px;
   background: rgba(31, 91, 79, 0.08);
   color: var(--accent-strong);
-  font-family: "SF Mono", "Monaco", "Cascadia Code", monospace;
+  font-family: var(--font-mono);
   font-size: 0.92em;
 }
 
@@ -91,21 +111,22 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-family: var(--font-sans);
+  font-weight: 780;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
 h1 {
-  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  font-size: var(--display-md);
 }
 
 h2 {
-  font-size: clamp(1.65rem, 4vw, 2.25rem);
+  font-size: var(--display-sm);
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
 }
 
 header,
@@ -143,17 +164,17 @@ footer {
 }
 
 .site-title-mark {
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .site-title-note {
-  font-size: 0.78rem;
+  font-size: var(--text-xs);
   color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
 }
 
 .nav-links {
@@ -167,7 +188,8 @@ footer {
   padding: 0.55rem 0.8rem;
   border-radius: 999px;
   color: var(--muted-strong);
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .nav-links a:hover {
@@ -210,10 +232,10 @@ footer {
   gap: 0.5rem;
   margin-bottom: 1rem;
   color: var(--accent-strong);
-  font-size: 0.84rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-label);
 }
 
 .eyebrow::before {
@@ -236,7 +258,7 @@ footer {
 .criterion-copy,
 .criterion-about p {
   color: var(--muted-strong);
-  font-size: 1.03rem;
+  font-size: var(--text-lg);
 }
 
 .hero-meta {
@@ -255,14 +277,16 @@ footer {
 .hero-stat strong {
   display: block;
   margin-bottom: 0.25rem;
-  font-size: 1.55rem;
+  font-size: var(--text-2xl);
+  font-weight: 780;
   line-height: 1;
+  letter-spacing: -0.03em;
   color: var(--text);
 }
 
 .hero-stat span {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: var(--text-sm);
 }
 
 .hero-panel {
@@ -276,7 +300,7 @@ footer {
 }
 
 .hero-panel h2 {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
 }
 
 .hero-panel p,
@@ -304,7 +328,7 @@ footer {
 }
 
 .section-title {
-  font-size: clamp(1.6rem, 3.3vw, 2.1rem);
+  font-size: var(--display-sm);
 }
 
 .section-note,
@@ -350,9 +374,9 @@ footer {
 
 .list-filter-label {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -380,9 +404,9 @@ footer {
   margin-top: 1rem;
   padding: 0 1rem 0.65rem;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
@@ -433,7 +457,7 @@ footer {
 
 .comparison-product .product-name,
 .comparison-vendor {
-  font-size: 1rem;
+  font-size: var(--text-base);
 }
 
 .comparison-product .product-vendor {
@@ -441,7 +465,7 @@ footer {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-  font-size: 0.92rem;
+  font-size: var(--text-sm);
 }
 
 .comparison-vendor,
@@ -556,16 +580,16 @@ footer {
 
 .comparison-card-label {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
 }
 
 .comparison-card-copy,
 .comparison-note-item p {
   color: var(--muted-strong);
-  font-size: 0.95rem;
+  font-size: var(--text-base);
 }
 
 .comparison-note-list,
@@ -647,14 +671,15 @@ footer {
   top: 50%;
   transform: translateY(-50%);
   color: var(--muted);
-  font-size: 0.84rem;
+  font-size: var(--text-xs);
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
 .results-copy {
   min-height: 1.4rem;
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
 }
 
 .product-grid,
@@ -717,7 +742,10 @@ footer {
 }
 
 .product-name {
-  font-size: 1.32rem;
+  font-size: var(--text-xl);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
 .product-vendor,
@@ -728,7 +756,7 @@ footer {
 }
 
 .product-link {
-  font-size: 0.93rem;
+  font-size: var(--text-sm);
 }
 
 .product-description {
@@ -740,7 +768,9 @@ footer {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.68);
   border: 1px solid rgba(92, 74, 57, 0.12);
-  font-size: 0.88rem;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
@@ -761,7 +791,7 @@ footer {
   background: var(--surface-tint);
   border: 1px solid rgba(92, 74, 57, 0.12);
   color: var(--muted-strong);
-  font-size: 0.88rem;
+  font-size: var(--text-sm);
 }
 
 .criteria-pill {
@@ -773,12 +803,12 @@ footer {
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(92, 74, 57, 0.12);
   color: var(--muted-strong);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
 }
 
 .criteria-pill strong {
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -789,11 +819,11 @@ footer {
   justify-content: center;
   padding: 0.24rem 0.56rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-label);
   white-space: nowrap;
 }
 
@@ -841,11 +871,12 @@ footer {
 }
 
 .criteria-question {
-  font-size: 0.94rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .criteria-note {
-  font-size: 0.92rem;
+  font-size: var(--text-sm);
 }
 
 .detail-grid {
@@ -868,7 +899,7 @@ footer {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
-  font-size: 0.96rem;
+  font-size: var(--text-sm);
 }
 
 .detail-meta a {
@@ -886,7 +917,7 @@ footer {
 }
 
 .detail-section h2 {
-  font-size: 1.3rem;
+  font-size: var(--text-xl);
 }
 
 .detail-stat {
@@ -920,13 +951,13 @@ footer {
 
 .source-label {
   display: block;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .source-note {
   display: block;
   margin-top: 0.18rem;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
 .back-link {
@@ -1047,9 +1078,9 @@ footer {
     display: inline-block;
     margin-right: 0.45rem;
     color: var(--muted);
-    font-size: 0.8rem;
+    font-size: var(--text-xs);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-label);
     text-transform: uppercase;
   }
 
@@ -1072,7 +1103,7 @@ footer {
 
 @media (max-width: 640px) {
   body {
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   header,
