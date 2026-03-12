@@ -62,8 +62,13 @@ function formatDate(value: unknown): string {
         <h2>Review snapshot</h2>
         <div class="detail-stats">
           <span class="detail-stat">{summary.rated} of {summary.total} criteria rated</span>
-          {product.date && <span class="detail-stat">Reviewed {formatDate(product.date)}</span>}
-          {product.reviewer && <span class="detail-stat">Reviewer: {product.reviewer}</span>}
+          {product.models
+            ? <span class="detail-stat">Evaluated {formatDate(product.date)} by {product.models.length} AI model{product.models.length > 1 ? 's' : ''}: {product.models.join(', ')}</span>
+            : <>
+                {product.date && <span class="detail-stat">Reviewed {formatDate(product.date)}</span>}
+                {product.reviewer && <span class="detail-stat">Reviewer: {product.reviewer}</span>}
+              </>
+          }
           <span class="detail-stat">{product.links.length} sources linked</span>
         </div>
       </section>
@@ -107,6 +112,25 @@ function formatDate(value: unknown): string {
               <RatingBadge rating={entry?.rating} />
             </div>
             <p class="criterion-copy">{entry?.notes || 'No review notes have been added for this criterion yet.'}</p>
+            {entry?.by_model && (
+              <details class="model-detail">
+                <summary>View per-check evidence ({Object.keys(entry.by_model).length} model{Object.keys(entry.by_model).length > 1 ? 's' : ''})</summary>
+                {Object.entries(entry.by_model).map(([model, result]) => (
+                  <div class="model-section">
+                    <h4>{model} — <RatingBadge rating={result.value} /></h4>
+                    <ul class="checks">
+                      {result.checks.map(check => (
+                        <li class={check.result ? 'check-pass' : 'check-fail'}>
+                          <span class="check-icon">{check.result ? '\u2713' : '\u2717'}</span>
+                          <strong>{check.id}</strong>: {check.evidence}
+                          {check.source && <a href={check.source} target="_blank" class="evidence-source-link">[source]</a>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </details>
+            )}
             <p class="criteria-note">{criterion.note}</p>
           </section>
         );

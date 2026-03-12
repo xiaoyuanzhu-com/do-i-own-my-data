@@ -2,9 +2,23 @@ import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
 
-export interface Criteria {
+export interface Check {
+  id: string;
+  result: boolean;
+  evidence: string;
+  source?: string;
+}
+
+export interface ModelResult {
+  value: "yes" | "partial" | "no";
+  checks: Check[];
+}
+
+// Unified display interface that works for both old and new formats
+export interface CriteriaDisplay {
   rating: "yes" | "partial" | "no";
-  notes: string;
+  notes?: string;
+  by_model?: Record<string, ModelResult>;
 }
 
 export type LogoConfig =
@@ -21,10 +35,11 @@ export interface Product {
   tags: string[];
   logoUrl: string | null;
   logoContainer: string | null;
-  criteria: Record<string, Criteria>;
+  criteria: Record<string, CriteriaDisplay>;
   links: { label: string; url: string }[];
   date?: string;
   reviewer?: string;
+  models?: string[];
 }
 
 export interface RatingSummary {
@@ -82,6 +97,25 @@ export function loadProducts(): Product[] {
       ) as Record<string, unknown>;
     }
 
+    const rawCriteria = (rating.criteria as Record<string, any>) || {};
+    const isNewFormat = "models" in rating;
+    const criteria: Record<string, CriteriaDisplay> = {};
+
+    for (const [key, val] of Object.entries(rawCriteria)) {
+      if (isNewFormat) {
+        criteria[key] = {
+          rating: val.value,
+          notes: val.notes,
+          by_model: val.by_model,
+        };
+      } else {
+        criteria[key] = {
+          rating: val.rating,
+          notes: val.notes,
+        };
+      }
+    }
+
     return {
       slug,
       name: registry.name as string,
@@ -91,10 +125,11 @@ export function loadProducts(): Product[] {
       tags: (registry.tags as string[]) || [],
       logoUrl: resolveLogoUrl(registry.logo),
       logoContainer: resolveLogoContainer(registry.logo),
-      criteria: (rating.criteria as Record<string, Criteria>) || {},
+      criteria,
       links: (rating.links as { label: string; url: string }[]) || [],
       date: rating.date as string | undefined,
       reviewer: rating.reviewer as string | undefined,
+      models: (rating.models as string[]) || undefined,
     };
   }).sort((a, b) => a.name.localeCompare(b.name));
 }
