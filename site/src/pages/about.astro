@@ -1,41 +1,60 @@
 ---
 import Base from '../layouts/Base.astro';
+import RatingBadge from '../components/RatingBadge.astro';
 import { loadCriteriaSchema } from '../data/products';
 
 const criteria = loadCriteriaSchema();
 ---
-<Base title="About">
-  <h1>About</h1>
-  <p>
-    <strong>Do I Own My Data?</strong> is a community-driven directory that rates products
-    on how friendly they are toward user data ownership.
-  </p>
-  <p>
-    Many apps and services collect your data but make it hard to access, export, or move it
-    elsewhere. This project evaluates products against six concrete criteria so consumers can
-    make informed choices about where their data lives.
-  </p>
+<Base
+  title="About"
+  description="About the Do I Own My Data? project and the six criteria used to rate products for data ownership and portability."
+>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">About the project</p>
+      <h1>A small directory with a narrow question</h1>
+      <p class="about-intro">
+        Most products say your data is available until you try to export it, move it,
+        delete it, or automate it. This project scores products on those concrete
+        behaviors instead of on marketing language.
+      </p>
+    </div>
 
-  <h2>The 6 Criteria</h2>
-  {criteria.map(c => (
-    <section class="criterion-about">
-      <h3>{c.name}: {c.question}</h3>
-      <p>{c.note}</p>
+    <aside class="hero-panel">
+      <h2>How to read a rating</h2>
+      <ul>
+        <li><RatingBadge rating="yes" /> means the product clearly supports the criterion.</li>
+        <li><RatingBadge rating="partial" /> means support exists but with important limits.</li>
+        <li><RatingBadge rating="no" /> means the product does not support it in a meaningful way.</li>
+      </ul>
+    </aside>
+  </section>
+
+  <section class="page-shell">
+    <div class="section-copy">
+      <h2 class="section-title">The six criteria</h2>
+      <p class="section-note">
+        Every product is scored using the same framework so comparisons stay grounded and legible.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      {criteria.map((criterion) => (
+        <section class="about-card">
+          <h3>{criterion.name}</h3>
+          <p class="criteria-question">{criterion.question}</p>
+          <p>{criterion.note}</p>
+        </section>
+      ))}
+    </div>
+
+    <section class="detail-section">
+      <h2>How to contribute</h2>
+      <p>
+        Ratings should be backed by product behavior and source material, not assumptions.
+        The repository lives on <a href="https://github.com/xiaoyuanzhu-com/do-i-own-my-data" target="_blank" rel="noreferrer">GitHub</a>.
+        To add or update a product, submit the registry and rating YAML with notes and evidence links.
+      </p>
     </section>
-  ))}
-
-  <h2>How ratings work</h2>
-  <p>Each criterion is rated as:</p>
-  <ul>
-    <li><span class="rating-badge rating-yes">yes</span> — the product fully supports this</li>
-    <li><span class="rating-badge rating-partial">partial</span> — limited or incomplete support</li>
-    <li><span class="rating-badge rating-no">no</span> — not supported</li>
-  </ul>
-
-  <h2>How to contribute</h2>
-  <p>
-    This project lives on <a href="https://github.com/xiaoyuanzhu-com/do-i-own-my-data" target="_blank">GitHub</a>.
-    To add or update a product rating, submit a pull request with YAML files.
-    See the README for details.
-  </p>
+  </section>
 </Base>

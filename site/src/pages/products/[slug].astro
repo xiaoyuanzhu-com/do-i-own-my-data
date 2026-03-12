@@ -2,11 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
 import ProductLogo from '../../components/ProductLogo.astro';
-import { loadProducts, loadCriteriaSchema } from '../../data/products';
+import { loadProducts, loadCriteriaSchema, summarizeCriteria } from '../../data/products';
 
 export function getStaticPaths() {
   const products = loadProducts();
-  return products.map(product => ({
+  return products.map((product) => ({
     params: { slug: product.slug },
     props: { product },
   }));
@@ -14,51 +14,102 @@ export function getStaticPaths() {
 
 const { product } = Astro.props;
 const criteriaSchema = loadCriteriaSchema();
+const criteriaIds = criteriaSchema.map((criterion) => criterion.id);
+const summary = summarizeCriteria(product, criteriaIds);
 
-function formatDate(d: unknown): string {
-  if (d instanceof Date) return d.toISOString().slice(0, 10);
-  return String(d);
+function formatDate(value: unknown): string {
+  if (!value) return '';
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value);
 }
 ---
-<Base title={product.name}>
-  <article class="product-detail">
-    <h1 class="product-title"><ProductLogo name={product.name} logoUrl={product.logoUrl} size={48} /> {product.name}</h1>
-    <p class="product-meta">
-      by {product.vendor} ·
-      <a href={product.website} target="_blank">{product.website}</a>
-    </p>
-    <p>{product.description}</p>
-    <div class="tags">
-      {product.tags.map(tag => <span class="tag">{tag}</span>)}
+<Base
+  title={product.name}
+  description={`${product.name} by ${product.vendor}: evidence-backed review of how well the product supports data ownership and portability.`}
+>
+  <section class="detail-grid">
+    <article class="detail-overview panel">
+      <div class="detail-heading">
+        <h1 class="product-page-title">
+          <ProductLogo name={product.name} logoUrl={product.logoUrl} size={64} />
+          <span>{product.name}</span>
+        </h1>
+        <p class="support-summary">
+          {summary.yes} yes · {summary.partial} partial · {summary.no} no
+        </p>
+      </div>
+
+      <p class="detail-meta">
+        <span>{product.vendor}</span>
+        <span>·</span>
+        <a href={product.website} target="_blank" rel="noreferrer">{product.website}</a>
+      </p>
+
+      <p class="product-description">{product.description}</p>
+
+      <div class="tags">
+        {product.tags.map((tag) => <span class="tag">{tag}</span>)}
+      </div>
+    </article>
+
+    <aside class="detail-side">
+      <section class="detail-section">
+        <h2>Review snapshot</h2>
+        <div class="detail-stats">
+          <span class="detail-stat">{summary.rated} of {summary.total} criteria rated</span>
+          {product.date && <span class="detail-stat">Reviewed {formatDate(product.date)}</span>}
+          {product.reviewer && <span class="detail-stat">Reviewer: {product.reviewer}</span>}
+          <span class="detail-stat">{product.links.length} sources linked</span>
+        </div>
+      </section>
+
+      {product.links.length > 0 && (
+        <section class="detail-section">
+          <h2>Sources</h2>
+          <ul class="source-list">
+            {product.links.map((link) => (
+              <li>
+                <a class="source-link" href={link.url} target="_blank" rel="noreferrer">
+                  <span class="source-label">{link.label}</span>
+                  <span class="source-note">Open source</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </aside>
+  </section>
+
+  <section class="page-shell">
+    <div class="section-copy">
+      <h2 class="section-title">Detailed ratings</h2>
+      <p class="section-note">
+        Each criterion explains what was scored and includes the product-specific review notes.
+      </p>
     </div>
 
-    <h2>Ratings</h2>
-    {product.date && <p class="review-meta">Reviewed {formatDate(product.date)} by {product.reviewer}</p>}
+    <div class="criteria-grid">
+      {criteriaSchema.map((criterion) => {
+        const entry = product.criteria[criterion.id];
+        return (
+          <section class="criteria-card">
+            <div class="criteria-card-head">
+              <div>
+                <h3>{criterion.name}</h3>
+                <p class="criteria-question">{criterion.question}</p>
+              </div>
+              <RatingBadge rating={entry?.rating} />
+            </div>
+            <p class="criterion-copy">{entry?.notes || 'No review notes have been added for this criterion yet.'}</p>
+            <p class="criteria-note">{criterion.note}</p>
+          </section>
+        );
+      })}
+    </div>
 
-    {criteriaSchema.map(criterion => {
-      const entry = product.criteria[criterion.id];
-      return (
-        <section class="criterion">
-          <h3>
-            {criterion.name}: {criterion.question}
-            {entry && <RatingBadge rating={entry.rating} />}
-          </h3>
-          {entry?.notes && <p>{entry.notes}</p>}
-        </section>
-      );
-    })}
-
-    {product.links.length > 0 && (
-      <>
-        <h2>Sources</h2>
-        <ul>
-          {product.links.map(link => (
-            <li><a href={link.url} target="_blank">{link.label}</a></li>
-          ))}
-        </ul>
-      </>
-    )}
-
-    <p class="back-link"><a href={import.meta.env.BASE_URL}>← Back to all products</a></p>
-  </article>
+    <p class="back-link">
+      <a href={import.meta.env.BASE_URL}>Back to all products</a>
+    </p>
+  </section>
 </Base>

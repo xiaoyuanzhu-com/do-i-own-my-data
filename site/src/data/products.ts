@@ -26,6 +26,14 @@ export interface Product {
   reviewer?: string;
 }
 
+export interface RatingSummary {
+  yes: number;
+  partial: number;
+  no: number;
+  rated: number;
+  total: number;
+}
+
 // Astro runs with cwd set to the site/ directory.
 // The data files (registry/, ratings/, schema/) live one level up.
 const DATA_DIR = path.resolve(process.cwd(), "..");
@@ -78,7 +86,7 @@ export function loadProducts(): Product[] {
       date: rating.date as string | undefined,
       reviewer: rating.reviewer as string | undefined,
     };
-  });
+  }).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function loadCriteriaSchema() {
@@ -95,4 +103,26 @@ export function loadCriteriaSchema() {
     }[];
   };
   return schema.criteria;
+}
+
+export function summarizeCriteria(
+  product: Product,
+  criteriaIds: string[]
+): RatingSummary {
+  const summary: RatingSummary = {
+    yes: 0,
+    partial: 0,
+    no: 0,
+    rated: 0,
+    total: criteriaIds.length,
+  };
+
+  for (const id of criteriaIds) {
+    const rating = product.criteria[id]?.rating;
+    if (!rating) continue;
+    summary[rating] += 1;
+    summary.rated += 1;
+  }
+
+  return summary;
 }

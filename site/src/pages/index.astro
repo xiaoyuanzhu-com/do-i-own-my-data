@@ -3,39 +3,130 @@ import Base from '../layouts/Base.astro';
 import RatingBadge from '../components/RatingBadge.astro';
 import Search from '../components/Search.astro';
 import ProductLogo from '../components/ProductLogo.astro';
-import { loadProducts, loadCriteriaSchema } from '../data/products';
+import { loadProducts, loadCriteriaSchema, summarizeCriteria } from '../data/products';
 
 const products = loadProducts();
 const criteriaSchema = loadCriteriaSchema();
-const CRITERIA_IDS = criteriaSchema.map(c => c.id);
-const CRITERIA_NAMES = criteriaSchema.map(c => c.name);
+const criteriaIds = criteriaSchema.map((criterion) => criterion.id);
+const totalSources = products.reduce((sum, product) => sum + product.links.length, 0);
+const totalRatings = products.reduce((sum, product) => sum + summarizeCriteria(product, criteriaIds).rated, 0);
+
+function buildSearchText(product: (typeof products)[number]) {
+  return [product.name, product.vendor, product.description, ...product.tags].join(' ');
+}
 ---
-<Base title="Products">
-  <h1>Products</h1>
-  <p>{products.length} products rated on data ownership.</p>
+<Base
+  title="Products"
+  description="Browse evidence-backed ratings for products based on how well they support reading, writing, understanding, deleting, and automating access to your data."
+>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Trustworthy by design</p>
+      <h1>How much control do you really have over your data?</h1>
+      <p>
+        This directory rates products against six practical ownership checks: can you
+        read your data, write it back, understand it, delete it, keep ownership of it,
+        and work with it programmatically.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-stat">
+          <strong>{products.length}</strong>
+          <span>products reviewed</span>
+        </div>
+        <div class="hero-stat">
+          <strong>{criteriaSchema.length}</strong>
+          <span>shared criteria</span>
+        </div>
+        <div class="hero-stat">
+          <strong>{totalSources}</strong>
+          <span>supporting sources linked</span>
+        </div>
+      </div>
+    </div>
 
-  <Search />
+    <aside class="hero-panel">
+      <h2>What makes a good score here?</h2>
+      <p>
+        High scores go to products that treat your data as portable, understandable,
+        and genuinely under your control, not merely visible inside their UI.
+      </p>
+      <ul>
+        <li><code>Read</code> means real export or API access, not just screen-level access.</li>
+        <li><code>Delete</code> means actual removal with a credible retention story.</li>
+        <li><code>Agent-Friendly</code> means an API can do the work without manual friction.</li>
+      </ul>
+      <p class="results-copy">{totalRatings} criterion ratings are currently published.</p>
+    </aside>
+  </section>
 
-  <div class="table-wrap">
-    <table class="product-table">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Vendor</th>
-          {CRITERIA_NAMES.map(name => <th>{name}</th>)}
-        </tr>
-      </thead>
-      <tbody id="product-list">
-        {products.map(product => (
-          <tr>
-            <td><a href={`${import.meta.env.BASE_URL}products/${product.slug}`}><ProductLogo name={product.name} logoUrl={product.logoUrl} size={24} /> {product.name}</a></td>
-            <td>{product.vendor}</td>
-            {CRITERIA_IDS.map(id => (
-              <td><RatingBadge rating={product.criteria[id]?.rating} /></td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+  <section class="page-shell">
+    <div class="section-header">
+      <div class="section-copy">
+        <h2 class="section-title">Browse rated products</h2>
+        <p class="section-note">
+          Search by product name, vendor, or tags, then open a product page for notes and sources.
+        </p>
+      </div>
+    </div>
+
+    <Search />
+
+    <div class="product-grid">
+      {products.map((product) => {
+        const summary = summarizeCriteria(product, criteriaIds);
+
+        return (
+          <article
+            class="product-card"
+            data-product-item
+            data-product-slug={product.slug}
+            data-search={buildSearchText(product)}
+          >
+            <div class="product-card-head">
+              <div class="product-identity">
+                <ProductLogo name={product.name} logoUrl={product.logoUrl} size={56} />
+                <div class="product-heading">
+                  <a class="product-name" href={`${import.meta.env.BASE_URL}products/${product.slug}`}>
+                    {product.name}
+                  </a>
+                  <p class="product-vendor">{product.vendor}</p>
+                </div>
+              </div>
+              <p class="support-summary">
+                {summary.yes} yes · {summary.partial} partial · {summary.no} no
+              </p>
+            </div>
+
+            <p class="product-description">{product.description}</p>
+
+            <div class="tags">
+              {product.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+
+            <div class="criteria-pills">
+              {criteriaSchema.map((criterion) => (
+                <div class="criteria-pill">
+                  <strong>{criterion.name}</strong>
+                  <RatingBadge rating={product.criteria[criterion.id]?.rating} />
+                </div>
+              ))}
+            </div>
+
+            <div class="product-card-head">
+              <a class="product-link" href={product.website} target="_blank" rel="noreferrer">
+                Visit website
+              </a>
+              <a class="product-link" href={`${import.meta.env.BASE_URL}products/${product.slug}`}>
+                Review details
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <p class="empty-state" data-search-empty hidden>
+      No products match that search yet.
+    </p>
+  </section>
 </Base>

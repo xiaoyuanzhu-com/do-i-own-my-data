@@ -3,7 +3,7 @@ interface Props {
   rating: 'yes' | 'partial' | 'no' | undefined;
 }
 const { rating } = Astro.props;
-const label = rating ?? '—';
+const label = rating ? rating[0].toUpperCase() + rating.slice(1) : 'Not rated';
 const className = rating ? `rating-${rating}` : 'rating-none';
 ---
 <span class={`rating-badge ${className}`}>{label}</span>
