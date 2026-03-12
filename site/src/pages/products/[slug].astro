@@ -31,7 +31,12 @@ function formatDate(value: unknown): string {
     <article class="detail-overview panel">
       <div class="detail-heading">
         <h1 class="product-page-title">
-          <ProductLogo name={product.name} logoUrl={product.logoUrl} size={64} />
+          <ProductLogo
+            name={product.name}
+            logoUrl={product.logoUrl}
+            container={product.logoContainer}
+            size={64}
+          />
           <span>{product.name}</span>
         </h1>
         <p class="support-summary">

@@ -1,132 +1,236 @@
 ---
 import Base from '../layouts/Base.astro';
 import RatingBadge from '../components/RatingBadge.astro';
-import Search from '../components/Search.astro';
 import ProductLogo from '../components/ProductLogo.astro';
-import { loadProducts, loadCriteriaSchema, summarizeCriteria } from '../data/products';
+import { loadProducts, loadCriteriaSchema } from '../data/products';
 
 const products = loadProducts();
 const criteriaSchema = loadCriteriaSchema();
 const criteriaIds = criteriaSchema.map((criterion) => criterion.id);
-const totalSources = products.reduce((sum, product) => sum + product.links.length, 0);
-const totalRatings = products.reduce((sum, product) => sum + summarizeCriteria(product, criteriaIds).rated, 0);
+const criteriaById = Object.fromEntries(
+  criteriaSchema.map((criterion) => [criterion.id, criterion])
+) as Record<string, (typeof criteriaSchema)[number]>;
+
+const criteriaGroups = [
+  { title: 'Access', ids: ['read', 'write', 'understand'] },
+  { title: 'Control', ids: ['delete', 'ownership', 'agent_friendly'] },
+];
 
 function buildSearchText(product: (typeof products)[number]) {
   return [product.name, product.vendor, product.description, ...product.tags].join(' ');
 }
+
+function formatDate(value: string | undefined) {
+  return value ?? 'Not dated';
+}
+
+function criterionLabel(id: string) {
+  const criterion = criteriaById[id];
+  return criterion?.name || id;
+}
+
+function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
+  return ids.some((id) => Boolean(product.criteria[id]?.notes));
+}
 ---
 <Base
   title="Products"
-  description="Browse evidence-backed ratings for products based on how well they support reading, writing, understanding, deleting, and automating access to your data."
+  description="Browse evidence-backed product ratings in a simple expandable list."
 >
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">Trustworthy by design</p>
-      <h1>How much control do you really have over your data?</h1>
-      <p>
-        This directory rates products against six practical ownership checks: can you
-        read your data, write it back, understand it, delete it, keep ownership of it,
-        and work with it programmatically.
-      </p>
-      <div class="hero-meta">
-        <div class="hero-stat">
-          <strong>{products.length}</strong>
-          <span>products reviewed</span>
-        </div>
-        <div class="hero-stat">
-          <strong>{criteriaSchema.length}</strong>
-          <span>shared criteria</span>
-        </div>
-        <div class="hero-stat">
-          <strong>{totalSources}</strong>
-          <span>supporting sources linked</span>
-        </div>
+  <section class="comparison-stage panel">
+    <div class="comparison-toolbar">
+      <div class="comparison-tools">
+        <label class="list-filter" for="list-filter">
+          <span class="list-filter-label">Filter</span>
+          <input id="list-filter" type="search" placeholder="Product, vendor, tag" autocomplete="off" />
+        </label>
+        <p class="results-copy" data-filter-results></p>
       </div>
     </div>
 
-    <aside class="hero-panel">
-      <h2>What makes a good score here?</h2>
-      <p>
-        High scores go to products that treat your data as portable, understandable,
-        and genuinely under your control, not merely visible inside their UI.
-      </p>
-      <ul>
-        <li><code>Read</code> means real export or API access, not just screen-level access.</li>
-        <li><code>Delete</code> means actual removal with a credible retention story.</li>
-        <li><code>Agent-Friendly</code> means an API can do the work without manual friction.</li>
-      </ul>
-      <p class="results-copy">{totalRatings} criterion ratings are currently published.</p>
-    </aside>
-  </section>
-
-  <section class="page-shell">
-    <div class="section-header">
-      <div class="section-copy">
-        <h2 class="section-title">Browse rated products</h2>
-        <p class="section-note">
-          Search by product name, vendor, or tags, then open a product page for notes and sources.
-        </p>
-      </div>
+    <div class="comparison-head" aria-hidden="true">
+      <span>Product</span>
+      <span>Vendor</span>
+      <span>Ratings</span>
     </div>
 
-    <Search />
-
-    <div class="product-grid">
+    <div class="comparison-list">
       {products.map((product) => {
-        const summary = summarizeCriteria(product, criteriaIds);
-
         return (
           <article
-            class="product-card"
-            data-product-item
-            data-product-slug={product.slug}
+            class="comparison-item"
+            data-list-item
+            data-slug={product.slug}
             data-search={buildSearchText(product)}
           >
-            <div class="product-card-head">
-              <div class="product-identity">
-                <ProductLogo name={product.name} logoUrl={product.logoUrl} size={56} />
-                <div class="product-heading">
-                  <a class="product-name" href={`${import.meta.env.BASE_URL}products/${product.slug}`}>
-                    {product.name}
-                  </a>
-                  <p class="product-vendor">{product.vendor}</p>
+            <button
+              class="comparison-row"
+              type="button"
+              aria-expanded="false"
+              aria-controls={`detail-${product.slug}`}
+              data-row-trigger
+            >
+              <span class="comparison-product">
+                <span class="product-identity">
+                  <ProductLogo
+                    name={product.name}
+                    logoUrl={product.logoUrl}
+                    container={product.logoContainer}
+                    size={44}
+                  />
+                  <span class="product-heading">
+                    <span class="product-name">{product.name}</span>
+                  </span>
+                </span>
+              </span>
+              <span class="comparison-vendor">{product.vendor}</span>
+              <span class="comparison-summary" aria-label={`${product.name} rating overview`}>
+                {criteriaIds.map((criterionId) => (
+                  <span
+                    class={`comparison-meter-segment is-${product.criteria[criterionId]?.rating ?? 'none'}`}
+                    title={`${criterionLabel(criterionId)}: ${product.criteria[criterionId]?.rating ?? 'not rated'}`}
+                  ></span>
+                ))}
+              </span>
+              <span class="comparison-chevron" aria-hidden="true"></span>
+            </button>
+
+            <div class="comparison-detail" id={`detail-${product.slug}`}>
+              <div class="comparison-detail-inner">
+                <div class="comparison-cards">
+                  {criteriaGroups
+                    .filter((group) => hasVisibleNotes(product, group.ids))
+                    .map((group) => (
+                    <section class="comparison-card">
+                      <p class="comparison-card-label">{group.title}</p>
+                      <div class="comparison-note-list">
+                        {group.ids.map((criterionId) => {
+                          const criterion = criteriaById[criterionId];
+                          const rating = product.criteria[criterionId];
+
+                          return (
+                            <div class="comparison-note-item">
+                              <div class="comparison-note-head">
+                                <strong>{criterion?.name || criterionId}</strong>
+                                <RatingBadge rating={rating?.rating} />
+                              </div>
+                              <p>{rating?.notes || 'No review notes yet.'}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ))}
+
+                  <section class="comparison-card">
+                    <p class="comparison-card-label">Evidence</p>
+                    <div class="detail-stats">
+                      <span class="detail-stat">Reviewed {formatDate(product.date)}</span>
+                      {product.reviewer && <span class="detail-stat">{product.reviewer}</span>}
+                      {product.tags.slice(0, 3).map((tag) => <span class="detail-stat">{tag}</span>)}
+                    </div>
+                    <div class="comparison-links">
+                      {product.links.slice(0, 3).map((link) => (
+                        <a class="source-link" href={link.url} target="_blank" rel="noreferrer">
+                          <span class="source-label">{link.label}</span>
+                          <span class="source-note">Source</span>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
                 </div>
               </div>
-              <p class="support-summary">
-                {summary.yes} yes · {summary.partial} partial · {summary.no} no
-              </p>
-            </div>
-
-            <p class="product-description">{product.description}</p>
-
-            <div class="tags">
-              {product.tags.map((tag) => <span class="tag">{tag}</span>)}
-            </div>
-
-            <div class="criteria-pills">
-              {criteriaSchema.map((criterion) => (
-                <div class="criteria-pill">
-                  <strong>{criterion.name}</strong>
-                  <RatingBadge rating={product.criteria[criterion.id]?.rating} />
-                </div>
-              ))}
-            </div>
-
-            <div class="product-card-head">
-              <a class="product-link" href={product.website} target="_blank" rel="noreferrer">
-                Visit website
-              </a>
-              <a class="product-link" href={`${import.meta.env.BASE_URL}products/${product.slug}`}>
-                Review details
-              </a>
             </div>
           </article>
         );
       })}
     </div>
 
-    <p class="empty-state" data-search-empty hidden>
-      No products match that search yet.
-    </p>
+    <p class="empty-state" data-filter-empty hidden>No products match that filter.</p>
   </section>
 </Base>
+
+<script>
+  const filterInput = document.getElementById('list-filter') as HTMLInputElement | null;
+  const filterResults = document.querySelector('[data-filter-results]') as HTMLParagraphElement | null;
+  const filterEmpty = document.querySelector('[data-filter-empty]') as HTMLElement | null;
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-list-item]'));
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-row-trigger]'));
+
+  const normalize = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[^\w\s-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const setResultsCopy = (count: number, query: string) => {
+    if (!filterResults) return;
+
+    if (!query) {
+      filterResults.textContent = `${items.length} products in the list.`;
+      return;
+    }
+
+    filterResults.textContent = count === 0
+      ? `No matches for “${query}”.`
+      : `${count} ${count === 1 ? 'match' : 'matches'} for “${query}”.`;
+  };
+
+  const closeItem = (item: HTMLElement) => {
+    const trigger = item.querySelector<HTMLButtonElement>('[data-row-trigger]');
+    item.classList.remove('is-open');
+    trigger?.setAttribute('aria-expanded', 'false');
+  };
+
+  const openItem = (item: HTMLElement) => {
+    items.forEach((entry) => {
+      if (entry !== item) closeItem(entry);
+    });
+
+    const trigger = item.querySelector<HTMLButtonElement>('[data-row-trigger]');
+    item.classList.add('is-open');
+    trigger?.setAttribute('aria-expanded', 'true');
+  };
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest<HTMLElement>('[data-list-item]');
+      if (!item) return;
+
+      if (item.classList.contains('is-open')) {
+        closeItem(item);
+        return;
+      }
+
+      openItem(item);
+    });
+  });
+
+  const updateFilter = () => {
+    const query = normalize(filterInput?.value || '');
+    let visible = 0;
+
+    items.forEach((item) => {
+      const match = !query || normalize(item.dataset.search || '').includes(query);
+      item.hidden = !match;
+
+      if (!match) {
+        closeItem(item);
+        return;
+      }
+
+      visible += 1;
+    });
+
+    if (filterEmpty) {
+      filterEmpty.hidden = visible !== 0;
+    }
+
+    setResultsCopy(visible, filterInput?.value.trim() || '');
+  };
+
+  setResultsCopy(items.length, '');
+  filterInput?.addEventListener('input', updateFilter);
+</script>

@@ -8,9 +8,9 @@ export interface Criteria {
 }
 
 export type LogoConfig =
-  | { source: "thesvg"; slug: string; variant?: string }
-  | { source: "url"; url: string }
-  | { source: "local"; file: string };
+  | { source: "thesvg"; slug: string; variant?: string; container?: string }
+  | { source: "url"; url: string; container?: string }
+  | { source: "local"; file: string; container?: string };
 
 export interface Product {
   slug: string;
@@ -20,6 +20,7 @@ export interface Product {
   vendor: string;
   tags: string[];
   logoUrl: string | null;
+  logoContainer: string | null;
   criteria: Record<string, Criteria>;
   links: { label: string; url: string }[];
   date?: string;
@@ -53,6 +54,14 @@ function resolveLogoUrl(logo: unknown): string | null {
   }
 }
 
+function resolveLogoContainer(logo: unknown): string | null {
+  if (!logo || typeof logo !== "object") return null;
+  const cfg = logo as Record<string, unknown>;
+  return typeof cfg.container === "string" && cfg.container.trim()
+    ? cfg.container.trim()
+    : null;
+}
+
 export function loadProducts(): Product[] {
   const registryDir = path.join(DATA_DIR, "registry");
   const ratingsDir = path.join(DATA_DIR, "ratings");
@@ -81,6 +90,7 @@ export function loadProducts(): Product[] {
       vendor: registry.vendor as string,
       tags: (registry.tags as string[]) || [],
       logoUrl: resolveLogoUrl(registry.logo),
+      logoContainer: resolveLogoContainer(registry.logo),
       criteria: (rating.criteria as Record<string, Criteria>) || {},
       links: (rating.links as { label: string; url: string }[]) || [],
       date: rating.date as string | undefined,

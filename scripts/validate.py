@@ -27,6 +27,11 @@ def validate_registry(path: Path) -> list[str]:
             errors.append(f"{path}: missing required field '{field}'")
     if "tags" in data and not isinstance(data["tags"], list):
         errors.append(f"{path}: 'tags' must be a list")
+    if "logo" in data and data["logo"] is not None:
+        if not isinstance(data["logo"], dict):
+            errors.append(f"{path}: 'logo' must be an object")
+        elif "container" in data["logo"] and not isinstance(data["logo"]["container"], str):
+            errors.append(f"{path}: logo.container must be a string color value")
     return errors
 
 

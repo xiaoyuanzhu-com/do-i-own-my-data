@@ -2,10 +2,11 @@
 interface Props {
   name: string;
   logoUrl: string | null;
+  container?: string | null;
   size?: number;
 }
 
-const { name, logoUrl, size = 24 } = Astro.props;
+const { name, logoUrl, container = null, size = 24 } = Astro.props;
 
 // Deterministic color from product name
 function hashColor(str: string): string {
@@ -19,17 +20,29 @@ function hashColor(str: string): string {
 
 const initial = name.charAt(0).toUpperCase();
 const bgColor = hashColor(name);
+const containerPadding = Math.max(Math.round(size * 0.14), 4);
+const frameStyle = [
+  `width:${size}px`,
+  `height:${size}px`,
+  container ? `padding:${containerPadding}px` : "",
+  container ? `background:${container}` : "",
+].filter(Boolean).join(";");
 ---
 
 {logoUrl ? (
-  <img
-    src={logoUrl}
-    alt={`${name} logo`}
-    width={size}
-    height={size}
-    class="product-logo"
-    loading="lazy"
-  />
+  <span
+    class:list={["product-logo-frame", container && "product-logo-frame-contained"]}
+    style={frameStyle}
+  >
+    <img
+      src={logoUrl}
+      alt={`${name} logo`}
+      width={size}
+      height={size}
+      class="product-logo"
+      loading="lazy"
+    />
+  </span>
 ) : (
   <span
     class="product-logo-fallback"

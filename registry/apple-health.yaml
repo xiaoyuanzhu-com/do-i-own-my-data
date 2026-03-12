@@ -6,3 +6,4 @@ tags: [health, fitness, wearable, ios]
 logo:
   source: thesvg
   slug: apple
+  container: "#ebe5db"
