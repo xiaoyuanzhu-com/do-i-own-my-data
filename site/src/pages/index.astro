@@ -37,21 +37,20 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
   title="Products"
   description="Browse product ratings in a simple expandable list."
 >
-  <section class="comparison-stage panel">
-    <div class="comparison-toolbar">
-      <div class="comparison-tools">
-        <label class="list-filter" for="list-filter">
-          <span class="list-filter-label">Filter</span>
-          <input id="list-filter" type="search" placeholder="Product, vendor, tag" autocomplete="off" />
-        </label>
-        <p class="results-copy" data-filter-results></p>
-      </div>
+  <div class="comparison-toolbar">
+    <div class="comparison-tools">
+      <label class="list-filter" for="list-filter">
+        <span class="list-filter-label">Filter</span>
+        <input id="list-filter" type="search" placeholder="Product, vendor, tag" autocomplete="off" />
+      </label>
+      <p class="results-copy" data-filter-results hidden></p>
     </div>
+  </div>
 
+  <section class="comparison-stage panel">
     <div class="comparison-head" aria-hidden="true">
       <span>Product</span>
-      <span>Vendor</span>
-      <span>Ratings</span>
+      {criteriaSchema.map((criterion) => <span>{criterion.name}</span>)}
     </div>
 
     <div class="comparison-list">
@@ -83,15 +82,15 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
                   </span>
                 </span>
               </span>
-              <span class="comparison-vendor">{product.vendor}</span>
-              <span class="comparison-summary" aria-label={`${product.name} rating overview`}>
-                {criteriaIds.map((criterionId) => (
-                  <span
-                    class={`comparison-meter-segment is-${product.criteria[criterionId]?.rating ?? 'none'}`}
-                    title={`${criterionLabel(criterionId)}: ${product.criteria[criterionId]?.rating ?? 'not rated'}`}
-                  ></span>
-                ))}
-              </span>
+              {criteriaSchema.map((criterion) => (
+                <span
+                  class="comparison-criterion"
+                  data-label={criterion.name}
+                  title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.rating ?? 'not rated'}`}
+                >
+                  <RatingBadge rating={product.criteria[criterion.id]?.rating} />
+                </span>
+              ))}
               <span class="comparison-chevron" aria-hidden="true"></span>
             </button>
 
@@ -169,10 +168,12 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
     if (!filterResults) return;
 
     if (!query) {
-      filterResults.textContent = `${items.length} products in the list.`;
+      filterResults.hidden = true;
+      filterResults.textContent = '';
       return;
     }
 
+    filterResults.hidden = false;
     filterResults.textContent = count === 0
       ? `No matches for “${query}”.`
       : `${count} ${count === 1 ? 'match' : 'matches'} for “${query}”.`;

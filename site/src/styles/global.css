@@ -439,6 +439,7 @@ h3 {
   justify-content: flex-end;
   gap: 1rem;
   flex-wrap: wrap;
+  margin-bottom: 0.9rem;
 }
 
 .comparison-stage {
@@ -450,6 +451,7 @@ h3 {
   display: grid;
   gap: 0.45rem;
   min-width: min(100%, 320px);
+  justify-items: end;
 }
 
 .list-filter {
@@ -484,7 +486,7 @@ h3 {
 
 .comparison-head {
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(120px, 0.8fr) minmax(160px, 0.8fr) 2rem;
+  grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(88px, 0.7fr)) 2rem;
   gap: 1rem;
   margin-top: 1rem;
   padding: 0 1rem 0.65rem;
@@ -493,6 +495,14 @@ h3 {
   font-weight: 700;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
+}
+
+.comparison-head > :first-child {
+  text-align: left;
+}
+
+.comparison-head > :not(:first-child) {
+  text-align: center;
 }
 
 .comparison-list {
@@ -510,7 +520,7 @@ h3 {
 .comparison-row {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(120px, 0.8fr) minmax(160px, 0.8fr) 2rem;
+  grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(88px, 0.7fr)) 2rem;
   gap: 1rem;
   align-items: center;
   padding: 1rem;
@@ -540,8 +550,7 @@ h3 {
   min-width: 0;
 }
 
-.comparison-product .product-name,
-.comparison-vendor {
+.comparison-product .product-name {
   font-size: var(--text-base);
 }
 
@@ -553,46 +562,18 @@ h3 {
   font-size: var(--text-sm);
 }
 
-.comparison-vendor,
-.comparison-summary {
+.comparison-criterion {
   color: var(--muted-strong);
 }
 
-.comparison-summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.comparison-criterion {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 0;
 }
 
-.comparison-meter {
-  display: inline-grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.3rem;
-  min-width: 7rem;
-}
-
-.comparison-meter-segment {
-  display: inline-block;
-  width: 100%;
-  height: 0.6rem;
-  border-radius: 999px;
-  background: var(--none-bg);
-}
-
-.comparison-meter-segment.is-yes {
-  background: var(--yes-text);
-}
-
-.comparison-meter-segment.is-partial {
-  background: #d1b36c;
-}
-
-.comparison-meter-segment.is-no {
-  background: #cc7781;
-}
-
-.comparison-meter-segment.is-none {
-  background: rgba(92, 74, 57, 0.15);
+.comparison-criterion .rating-badge {
+  justify-content: center;
 }
 
 .comparison-chevron {
@@ -902,33 +883,40 @@ h3 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.24rem 0.56rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  font-size: 0.76rem;
   font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: var(--tracking-label);
-  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .rating-yes {
   background: var(--yes-bg);
+  border-color: rgba(29, 93, 64, 0.16);
   color: var(--yes-text);
 }
 
 .rating-partial {
   background: var(--partial-bg);
+  border-color: rgba(138, 90, 21, 0.16);
   color: var(--partial-text);
 }
 
 .rating-no {
   background: var(--no-bg);
+  border-color: rgba(142, 47, 57, 0.14);
   color: var(--no-text);
 }
 
 .rating-none {
   background: var(--none-bg);
+  border-color: rgba(92, 83, 74, 0.14);
   color: var(--none-text);
 }
 
@@ -1141,6 +1129,10 @@ h3 {
     align-items: stretch;
   }
 
+  .comparison-tools {
+    justify-items: stretch;
+  }
+
   .comparison-head,
   .comparison-row {
     grid-template-columns: minmax(0, 1fr);
@@ -1154,8 +1146,7 @@ h3 {
     gap: 0.6rem;
   }
 
-  .comparison-vendor::before,
-  .comparison-summary::before {
+  .comparison-criterion::before {
     display: inline-block;
     margin-right: 0.45rem;
     color: var(--muted);
@@ -1165,12 +1156,16 @@ h3 {
     text-transform: uppercase;
   }
 
-  .comparison-vendor::before {
-    content: "Vendor";
+  .comparison-criterion {
+    width: 100%;
   }
 
-  .comparison-summary::before {
-    content: "Snapshot";
+  .comparison-criterion::before {
+    content: attr(data-label);
+  }
+
+  .comparison-criterion .rating-badge {
+    justify-content: center;
   }
 
   .comparison-chevron {

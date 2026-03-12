@@ -64,7 +64,7 @@ criteria:
       no: Your data is yours — platform only uses it to provide the service
 
   - id: agent_friendly
-    name: Agent-Friendly
+    name: Agent
     question: Is it agent-friendly?
     note: >
       Can an AI agent perform all of the above (read, write, understand, delete)

@@ -17,7 +17,7 @@ Each product has a **registry entry** (what it is) and a **rating** (how it scor
 | **Understand** | Can I understand my data? |
 | **Delete** | Can I delete my data? |
 | **Ownership** | Do they own my data? |
-| **Agent-Friendly** | Is it agent-friendly? |
+| **Agent** | Is it agent-friendly? |
 
 > **Read** — not just viewing in the app. Can you export, download, or access your data programmatically (API, sync, bulk export, real-time streaming)?
 >
@@ -29,7 +29,7 @@ Each product has a **registry entry** (what it is) and a **rating** (how it scor
 >
 > **Ownership** — does the platform claim rights over your data? Can they use it for AI training, ads, resale?
 >
-> **Agent-Friendly** — can an AI agent do all the above programmatically, without manual steps?
+> **Agent** — can an AI agent do all the above programmatically, without manual steps?
 
 See `schema/criteria.yaml` for the full definitions including what yes/partial/no means for each.
 
