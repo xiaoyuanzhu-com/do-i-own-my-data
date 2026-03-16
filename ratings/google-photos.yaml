@@ -2,12 +2,16 @@ date: 2026-03-12
 models:
   - claude-sonnet-4-20250514
 
+overall:
+  grade: A
+  score: 77
+
 criteria:
   read:
-    value: "yes"
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: A
         checks:
           - id: bulk-export
             result: true
@@ -29,13 +33,13 @@ criteria:
             result: false
             evidence: "No streaming or real-time read API is available. The Picker API requires user-initiated sessions and does not support automated or real-time access."
             source: "https://developers.google.com/photos/picker/guides/get-started-picker"
-    notes: "Google Takeout provides comprehensive bulk export in open formats with JSON metadata sidecars. However, the Library API read scopes were deprecated in March 2025, leaving no programmatic bulk read access."
+    notes: "Comprehensive bulk export via Takeout covering all types in open formats. API read was deprecated in 2025. Grade A: bulk-export AND covers-all-types AND open-format."
 
   write:
-    value: "yes"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: S
         checks:
           - id: import-from-file
             result: true
@@ -53,13 +57,13 @@ criteria:
             result: true
             evidence: "Bulk upload is supported both via the web UI (drag-and-drop multiple files) and the API (parallel byte uploads with serial batchCreate calls)."
             source: "https://developers.google.com/photos/library/guides/upload-media"
-    notes: "Google Photos supports file import, service-to-service migration from iCloud, API-based writes via the appendonly scope, and bulk upload."
+    notes: "All 4 checks pass: file import, service migration, API write, and bulk upload. Grade S."
 
   understand:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: open-format
             result: true
@@ -77,13 +81,13 @@ criteria:
             result: true
             evidence: "The exported photos are standard image/video files viewable in any application, and the JSON metadata files are plain text containing readable fields like title, description, GPS coordinates, and timestamps."
             source: "https://metadatafixer.com/learn/google-takeout-json-files-explained"
-    notes: "Exported data uses open formats and is human-readable, but the metadata JSON schema is undocumented and proprietary (not EXIF/XMP standard), requiring third-party tools to reintegrate metadata."
+    notes: "Open formats and human-readable, but metadata schema is undocumented and proprietary. Grade B: open-format AND human-readable."
 
   delete:
-    value: "yes"
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: A
         checks:
           - id: granular-delete
             result: true
@@ -101,13 +105,13 @@ criteria:
             result: false
             evidence: "Google's retention policy states data is removed from active systems but does not guarantee specific timelines for removal from all backup systems."
             source: "https://policies.google.com/technologies/retention"
-    notes: "Google Photos provides granular and full deletion with clearly published retention timelines (60-day trash period). Backup removal timelines are less specific."
+    notes: "Granular and full deletion with clear published retention timelines. Only backup-removal timeline is unspecified. Grade A: granular-delete AND full-delete AND clear-retention."
 
   ownership:
-    value: partial
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: A
         checks:
           - id: broad-license
             result: true
@@ -125,13 +129,13 @@ criteria:
             result: false
             evidence: "Google explicitly states it does not show personalized ads based on content from Google Photos."
             source: "https://safety.google/intl/en_us/products/photos/"
-    notes: "Google grants itself a broad license for service operation but commits to not selling data, not using Photos for ad targeting, and not training external AI with Photos data."
+    notes: "Broad license exists for service operation, but no AI training, no data selling, no ad targeting. Grade A: NOT ai-training AND NOT data-selling AND NOT ad-targeting."
 
   agent_friendly:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: documented-api
             result: true
@@ -153,7 +157,7 @@ criteria:
             result: false
             evidence: "After the March 2025 deprecation, the API supports Create (upload via appendonly scope) but read is limited to app-created content only, and there is no API endpoint for deleting photos."
             source: "https://developers.google.com/photos/support/updates"
-    notes: "Google Photos has well-documented APIs with standard OAuth and JSON responses, but the March 2025 changes severely limited read access and there is no delete API."
+    notes: "Well-documented APIs with OAuth and JSON, but programmatic-crud fails (no read/delete after 2025 deprecation). Grade B: documented-api AND standard-auth AND machine-readable-output."
 
 links:
   - label: "Google Takeout"

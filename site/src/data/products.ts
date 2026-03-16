@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
 
+export type Grade = "S" | "A" | "B" | "C" | "D" | "F";
+
 export interface Check {
   id: string;
   result: boolean;
@@ -10,13 +12,13 @@ export interface Check {
 }
 
 export interface ModelResult {
-  value: "yes" | "partial" | "no";
+  grade: Grade;
   checks: Check[];
 }
 
-// Unified display interface that works for both old and new formats
+// Unified display interface
 export interface CriteriaDisplay {
-  rating: "yes" | "partial" | "no";
+  grade: Grade;
   notes?: string;
   by_model?: Record<string, ModelResult>;
 }
@@ -36,19 +38,28 @@ export interface Product {
   logoUrl: string | null;
   logoContainer: string | null;
   criteria: Record<string, CriteriaDisplay>;
+  overall: { grade: Grade; score: number } | null;
   links: { label: string; url: string }[];
   date?: string;
   reviewer?: string;
   models?: string[];
 }
 
-export interface RatingSummary {
-  yes: number;
-  partial: number;
-  no: number;
+export interface GradeSummary {
+  grades: Record<Grade, number>;
   rated: number;
   total: number;
+  overall: { grade: Grade; score: number } | null;
 }
+
+const GRADE_TO_SCORE: Record<Grade, number> = {
+  S: 100,
+  A: 80,
+  B: 60,
+  C: 40,
+  D: 20,
+  F: 0,
+};
 
 // Astro runs with cwd set to the site/ directory.
 // The data files (registry/, ratings/, schema/) live one level up.
@@ -77,6 +88,19 @@ function resolveLogoContainer(logo: unknown): string | null {
     : null;
 }
 
+// Map legacy yes/partial/no to grades for backward compatibility
+function legacyValueToGrade(value: string, criterionId: string): Grade {
+  if (criterionId === "ownership") {
+    // Ownership was inverted: "no" (you own it) = S, "yes" (they own it) = F
+    if (value === "no") return "S";
+    if (value === "partial") return "C";
+    return "F";
+  }
+  if (value === "yes") return "A";
+  if (value === "partial") return "C";
+  return "F";
+}
+
 export function loadProducts(): Product[] {
   const registryDir = path.join(DATA_DIR, "registry");
   const ratingsDir = path.join(DATA_DIR, "ratings");
@@ -98,23 +122,47 @@ export function loadProducts(): Product[] {
     }
 
     const rawCriteria = (rating.criteria as Record<string, any>) || {};
+    const isGraded = "overall" in rating;
     const isNewFormat = "models" in rating;
     const criteria: Record<string, CriteriaDisplay> = {};
 
     for (const [key, val] of Object.entries(rawCriteria)) {
-      if (isNewFormat) {
+      if (isGraded) {
+        // New graded format
         criteria[key] = {
-          rating: val.value,
+          grade: val.grade,
           notes: val.notes,
           by_model: val.by_model,
         };
-      } else {
+      } else if (isNewFormat) {
+        // Legacy multi-model format (yes/partial/no)
         criteria[key] = {
-          rating: val.rating,
+          grade: legacyValueToGrade(val.value, key),
+          notes: val.notes,
+          by_model: val.by_model
+            ? Object.fromEntries(
+                Object.entries(val.by_model).map(([model, result]: [string, any]) => [
+                  model,
+                  {
+                    grade: legacyValueToGrade(result.value, key),
+                    checks: result.checks,
+                  },
+                ])
+              )
+            : undefined,
+        };
+      } else {
+        // Legacy reviewer format
+        criteria[key] = {
+          grade: legacyValueToGrade(val.rating, key),
           notes: val.notes,
         };
       }
     }
+
+    const overall = isGraded && rating.overall
+      ? (rating.overall as { grade: Grade; score: number })
+      : null;
 
     return {
       slug,
@@ -126,6 +174,7 @@ export function loadProducts(): Product[] {
       logoUrl: resolveLogoUrl(registry.logo),
       logoContainer: resolveLogoContainer(registry.logo),
       criteria,
+      overall,
       links: (rating.links as { label: string; url: string }[]) || [],
       date: rating.date as string | undefined,
       reviewer: rating.reviewer as string | undefined,
@@ -144,30 +193,29 @@ export function loadCriteriaSchema() {
       name: string;
       question: string;
       note: string;
-      values: Record<string, string>;
     }[];
   };
   return schema.criteria;
 }
 
-export function summarizeCriteria(
+export function summarizeGrades(
   product: Product,
   criteriaIds: string[]
-): RatingSummary {
-  const summary: RatingSummary = {
-    yes: 0,
-    partial: 0,
-    no: 0,
-    rated: 0,
-    total: criteriaIds.length,
-  };
+): GradeSummary {
+  const grades: Record<Grade, number> = { S: 0, A: 0, B: 0, C: 0, D: 0, F: 0 };
+  let rated = 0;
 
   for (const id of criteriaIds) {
-    const rating = product.criteria[id]?.rating;
-    if (!rating) continue;
-    summary[rating] += 1;
-    summary.rated += 1;
+    const grade = product.criteria[id]?.grade;
+    if (!grade) continue;
+    grades[grade] += 1;
+    rated += 1;
   }
 
-  return summary;
+  return {
+    grades,
+    rated,
+    total: criteriaIds.length,
+    overall: product.overall,
+  };
 }

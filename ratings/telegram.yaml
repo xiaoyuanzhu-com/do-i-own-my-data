@@ -2,12 +2,16 @@ date: 2026-03-12
 models:
   - claude-sonnet-4-20250514
 
+overall:
+  grade: S
+  score: 93
+
 criteria:
   read:
-    value: "yes"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: S
         checks:
           - id: bulk-export
             result: true
@@ -29,13 +33,13 @@ criteria:
             result: true
             evidence: "The Bot API supports webhooks and long polling for real-time message updates, and the MTProto API provides persistent connections with real-time event streaming."
             source: "https://core.telegram.org/bots/api"
-    notes: "Telegram offers excellent read access through both a comprehensive desktop export tool (JSON/HTML) and well-documented APIs with real-time capabilities."
+    notes: "All 5 checks pass. Comprehensive export, full API access, real-time streaming. Grade S."
 
   write:
-    value: "yes"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: S
         checks:
           - id: import-from-file
             result: true
@@ -53,13 +57,13 @@ criteria:
             result: true
             evidence: "Via the Bot API, bots can send up to 30 messages per second, enabling bulk operations. The import feature also handles entire chat histories at once."
             source: "https://core.telegram.org/bots/faq"
-    notes: "Telegram supports writing data through native import from other services, file-based import, and a full-featured Bot API with bulk capabilities."
+    notes: "All 4 checks pass. File import, service migration, API write, and bulk upload all available. Grade S."
 
   understand:
-    value: "yes"
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: A
         checks:
           - id: open-format
             result: true
@@ -77,13 +81,13 @@ criteria:
             result: true
             evidence: "The JSON export uses readable field names and the HTML export is directly viewable in a browser."
             source: "https://core.telegram.org/import-export"
-    notes: "Telegram exports are in open, documented, human-readable formats. The schema is vendor-specific but well-documented."
+    notes: "Open, documented, human-readable formats. Only standard-schema missing (Telegram-specific). Grade A: open-format AND documented-schema AND human-readable."
 
   delete:
-    value: "yes"
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: A
         checks:
           - id: granular-delete
             result: true
@@ -101,13 +105,13 @@ criteria:
             result: false
             evidence: "Telegram's privacy policy notes that certain metadata (phone number, IP addresses, device info) may be retained even after account deletion, with no explicit timeline for backup removal."
             source: "https://telegram.org/privacy"
-    notes: "Telegram provides strong deletion capabilities including granular message deletion, full account deletion, and clear retention policies, though some metadata persists after deletion."
+    notes: "Strong deletion with clear retention policies. Only backup-removal unclear. Grade A: granular-delete AND full-delete AND clear-retention."
 
   ownership:
-    value: "no"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: S
         checks:
           - id: broad-license
             result: false
@@ -125,13 +129,13 @@ criteria:
             result: false
             evidence: "Telegram Ads targets public channels by topic, not individual users. The platform does not collect user data for ad targeting."
             source: "https://ads.telegram.org/guidelines"
-    notes: "Telegram has strong user data ownership protections. Narrow operational license, explicit ban on AI training, no data selling, and no personal ad targeting."
+    notes: "All checks pass. Narrow license, explicit AI training ban, no data selling, no personal ad targeting. Grade S."
 
   agent_friendly:
-    value: "yes"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: S
         checks:
           - id: documented-api
             result: true
@@ -153,7 +157,7 @@ criteria:
             result: true
             evidence: "The Bot API supports sending/reading/editing/deleting messages and managing chats programmatically. The MTProto API provides full CRUD for all Telegram operations."
             source: "https://core.telegram.org/bots/api"
-    notes: "Telegram is highly agent-friendly with two well-documented APIs, simple token auth, JSON responses, reasonable rate limits, and full programmatic CRUD capabilities."
+    notes: "All 5 checks pass. Two well-documented APIs, token auth, JSON output, full CRUD. Grade S."
 
 links:
   - label: "Telegram Export Blog Post"

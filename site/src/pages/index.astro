@@ -49,6 +49,7 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
     <div class="comparison-stage">
       <div class="comparison-head" aria-hidden="true">
         <span>Product</span>
+        <span>Overall</span>
         {criteriaSchema.map((criterion) => <span>{criterion.name}</span>)}
       </div>
 
@@ -81,13 +82,20 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
                     </span>
                   </span>
                 </span>
+                <span
+                  class="comparison-criterion"
+                  data-label="Overall"
+                  title={`Overall: ${product.overall?.grade ?? 'not rated'}${product.overall?.score ? ` (${product.overall.score})` : ''}`}
+                >
+                  <RatingBadge grade={product.overall?.grade} />
+                </span>
                 {criteriaSchema.map((criterion) => (
                   <span
                     class="comparison-criterion"
                     data-label={criterion.name}
-                    title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.rating ?? 'not rated'}`}
+                    title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.grade ?? 'not rated'}`}
                   >
-                    <RatingBadge rating={product.criteria[criterion.id]?.rating} />
+                    <RatingBadge grade={product.criteria[criterion.id]?.grade} />
                   </span>
                 ))}
                 <span class="comparison-chevron" aria-hidden="true"></span>
@@ -104,15 +112,15 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
                         <div class="comparison-note-list">
                           {group.ids.map((criterionId) => {
                             const criterion = criteriaById[criterionId];
-                            const rating = product.criteria[criterionId];
+                            const entry = product.criteria[criterionId];
 
                             return (
                               <div class="comparison-note-item">
                                 <div class="comparison-note-head">
                                   <strong>{criterion?.name || criterionId}</strong>
-                                  <RatingBadge rating={rating?.rating} />
+                                  <RatingBadge grade={entry?.grade} />
                                 </div>
-                                <p>{rating?.notes || 'No review notes yet.'}</p>
+                                <p>{entry?.notes || 'No review notes yet.'}</p>
                               </div>
                             );
                           })}
@@ -175,8 +183,8 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
 
     filterResults.hidden = false;
     filterResults.textContent = count === 0
-      ? `No matches for “${query}”.`
-      : `${count} ${count === 1 ? 'match' : 'matches'} for “${query}”.`;
+      ? `No matches for "${query}".`
+      : `${count} ${count === 1 ? 'match' : 'matches'} for "${query}".`;
   };
 
   const closeItem = (item: HTMLElement) => {

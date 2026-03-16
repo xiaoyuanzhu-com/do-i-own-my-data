@@ -2,12 +2,16 @@ date: 2026-03-12
 models:
   - claude-sonnet-4-20250514
 
+overall:
+  grade: B
+  score: 62
+
 criteria:
   read:
-    value: "yes"
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: B
         checks:
           - id: bulk-export
             result: true
@@ -29,13 +33,13 @@ criteria:
             result: false
             evidence: "Garmin offers webhook-based push notifications for near-real-time data delivery, but this is only available through the business-restricted Developer Program API."
             source: "https://developer.garmin.com/gc-developer-program/activity-api/"
-    notes: "Garmin provides a comprehensive GDPR bulk export in open formats (JSON, FIT, GPX, TCX), though it may not cover all historical data. The API is business-only."
+    notes: "GDPR bulk export in open formats (JSON, FIT, GPX, TCX), but no individual API access. Grade B: bulk-export AND open-format."
 
   write:
-    value: partial
+    grade: C
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: C
         checks:
           - id: import-from-file
             result: true
@@ -52,13 +56,13 @@ criteria:
             result: false
             evidence: "Garmin Connect does not support batch upload of multiple files; activities must be imported one at a time through the web interface."
             source: "https://forums.garmin.com/apps-software/mobile-apps-web/f/garmin-connect-web/75856/importing-gpx-or-csv-files"
-    notes: "Users can import individual activity files (FIT/GPX/TCX) but there is no bulk upload, no service migration, and no individual API write access."
+    notes: "Only import-from-file passes (one activity at a time). No bulk upload, no service migration, no individual API write. Grade C: import-from-file only."
 
   understand:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: open-format
             result: true
@@ -76,13 +80,13 @@ criteria:
             result: true
             evidence: "JSON exports are human-readable, and GPX/TCX files are XML-based and easily interpreted. FIT files are binary but can be converted using freely available tools and the FIT SDK."
             source: "https://developer.garmin.com/fit/cookbook/decoding-activity-files/"
-    notes: "Data is exported in open formats and is human-readable, but the schema is not fully documented publicly and uses Garmin-specific structures."
+    notes: "Open formats and human-readable, but schema not fully documented and Garmin-specific. Grade B: open-format AND human-readable."
 
   delete:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: granular-delete
             result: true
@@ -100,13 +104,13 @@ criteria:
             result: false
             evidence: "No public documentation states a specific timeline for removal of deleted data from backups. Garmin states it 'may take some time' for complete removal."
             source: "https://support.garmin.com/en-US/?faq=lBWQm0sVAK06RRRXFECFv6"
-    notes: "Garmin supports both granular activity deletion and full account deletion, but lacks a clear published retention policy with specific timelines."
+    notes: "Granular and full deletion available, but no clear retention policy. Grade B: granular-delete AND full-delete."
 
   ownership:
-    value: "no"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: S
         checks:
           - id: broad-license
             result: false
@@ -124,13 +128,13 @@ criteria:
             result: false
             evidence: "Garmin does not share personal information for advertising purposes with third parties, and their business model is hardware-based rather than ad-driven."
             source: "https://www.garmin.com/en-US/privacy/connect/policy/"
-    notes: "Garmin has user-friendly data ownership terms. They do not claim broad licenses over user health data, do not sell personal data, and do not use data for advertising."
+    notes: "No broad license, no AI training, no data selling, no ad targeting. Grade S: all checks pass (no exploitation)."
 
   agent_friendly:
-    value: partial
+    grade: D
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: D
         checks:
           - id: documented-api
             result: false
@@ -152,7 +156,7 @@ criteria:
             result: false
             evidence: "Even for approved business developers, the API primarily supports read operations and limited write. Full CRUD including delete is not available via API."
             source: "https://developer.garmin.com/gc-developer-program/"
-    notes: "A documented API exists with standard auth and machine-readable output, but it is restricted to business developers only. Individual users have no official programmatic access."
+    notes: "API exists but is restricted to business developers. Individual users have no official programmatic access. Grade D: some access exists but undocumented/restricted for individuals."
 
 links:
   - label: "Garmin Connect Data Export FAQ"

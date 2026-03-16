@@ -591,7 +591,7 @@ h3 {
   min-width: 0;
 }
 
-.comparison-criterion .rating-badge {
+.comparison-criterion .grade-badge {
   justify-content: center;
 }
 
@@ -901,7 +901,7 @@ h3 {
   color: var(--muted);
 }
 
-.rating-badge {
+.grade-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -918,25 +918,43 @@ h3 {
   flex: 0 0 auto;
 }
 
-.rating-yes {
+.grade-S {
   background: var(--yes-bg);
   border-color: rgba(29, 93, 64, 0.16);
   color: var(--yes-text);
 }
 
-.rating-partial {
+.grade-A {
+  background: var(--yes-bg);
+  border-color: rgba(29, 93, 64, 0.12);
+  color: var(--yes-text);
+}
+
+.grade-B {
   background: var(--partial-bg);
   border-color: rgba(138, 90, 21, 0.16);
   color: var(--partial-text);
 }
 
-.rating-no {
+.grade-C {
+  background: var(--partial-bg);
+  border-color: rgba(138, 90, 21, 0.12);
+  color: var(--partial-text);
+}
+
+.grade-D {
   background: var(--no-bg);
   border-color: rgba(142, 47, 57, 0.14);
   color: var(--no-text);
 }
 
-.rating-none {
+.grade-F {
+  background: var(--no-bg);
+  border-color: rgba(142, 47, 57, 0.10);
+  color: var(--no-text);
+}
+
+.grade-none {
   background: var(--none-bg);
   border-color: rgba(92, 83, 74, 0.14);
   color: var(--none-text);

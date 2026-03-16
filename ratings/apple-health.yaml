@@ -2,12 +2,16 @@ date: 2026-03-12
 models:
   - claude-sonnet-4-20250514
 
+overall:
+  grade: B
+  score: 69
+
 criteria:
   read:
-    value: "yes"
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: B
         checks:
           - id: bulk-export
             result: true
@@ -29,13 +33,13 @@ criteria:
             result: true
             evidence: "HKObserverQuery provides near-real-time monitoring of the HealthKit store with background delivery support, updating apps when new samples are saved."
             source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
-    notes: "Apple Health offers robust bulk export in XML and a comprehensive on-device API, though the export does not cover every data type (notably medications and raw sensor data)."
+    notes: "Has bulk-export with open-format and api-read, but covers-all-types fails (excludes medications, raw sensor data). Grade B: bulk-export AND (open-format OR api-read)."
 
   write:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: import-from-file
             result: false
@@ -53,13 +57,13 @@ criteria:
             result: false
             evidence: "There is no native bulk upload feature. While the HealthKit API can write multiple samples, there is no built-in bulk import from files."
             source: "https://discussions.apple.com/thread/250998087"
-    notes: "HealthKit provides a write API and supports data from connected services, but there is no native file import or bulk upload capability without third-party apps."
+    notes: "Has api-write but no import-from-file or bulk-upload. Grade B: api-write passes."
 
   understand:
-    value: "yes"
+    grade: A
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: A
         checks:
           - id: open-format
             result: true
@@ -77,13 +81,13 @@ criteria:
             result: true
             evidence: "The XML export is human-readable with clear element names like 'Record', 'Workout', 'ActivitySummary' with attributes for type, value, unit, dates, and source."
             source: "https://gist.github.com/hoffa/936db2bb85e134709cd263dd358ca309"
-    notes: "Exported data is in open XML format with well-documented schema and human-readable structure, though the schema is Apple-proprietary rather than an industry standard like FHIR."
+    notes: "Open XML format, well-documented schema, human-readable. Missing only standard-schema (Apple-proprietary, not FHIR). Grade A: open-format AND documented-schema AND human-readable."
 
   delete:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: granular-delete
             result: true
@@ -101,13 +105,13 @@ criteria:
             result: false
             evidence: "While deleting from iCloud removes data across synced devices, Apple does not explicitly state a timeline for removal from iCloud backups."
             source: "https://discussions.apple.com/thread/254533361"
-    notes: "Apple Health supports both granular and full deletion of health data, but lacks a formal published retention policy and clear backup removal guarantees."
+    notes: "Both granular and full deletion available, but no clear retention policy or backup removal guarantees. Grade B: granular-delete AND full-delete."
 
   ownership:
-    value: "no"
+    grade: S
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: S
         checks:
           - id: broad-license
             result: false
@@ -125,13 +129,13 @@ criteria:
             result: false
             evidence: "Apple explicitly confirms that Health app data is not used by Apple Search Ads to deliver ads."
             source: "https://www.apple.com/legal/privacy/data/en/apple-advertising/"
-    notes: "Apple has strong privacy commitments for health data: no broad license, no AI training on personal data, no data selling, and no ad targeting. Users retain ownership."
+    notes: "No broad license, no AI training, no data selling, no ad targeting. Users fully own their data. Grade S: all checks pass (no exploitation)."
 
   agent_friendly:
-    value: partial
+    grade: C
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: C
         checks:
           - id: documented-api
             result: true
@@ -153,7 +157,7 @@ criteria:
             result: false
             evidence: "HealthKit requires a native iOS app to access data — there is no web API, REST API, or server-side programmatic access."
             source: "https://www.themomentum.ai/blog/what-you-can-and-cant-do-with-apple-healthkit-data"
-    notes: "HealthKit is well-documented and returns machine-readable data, but it is an on-device iOS-only framework with no web API, no standard OAuth auth, and requires a native app."
+    notes: "Documented API exists but with significant friction: iOS-only, no web API, no standard OAuth. Grade C: documented-api with significant friction."
 
 links:
   - label: "Apple Health & Privacy"

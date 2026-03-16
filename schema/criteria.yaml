@@ -1,3 +1,37 @@
+# Grade scale used across all criteria: S, A, B, C, D, F
+# Higher is always better for the user. See judges/rules.md for full grading logic.
+
+grades:
+  S: Perfect — exemplary data ownership
+  A: Excellent — core capabilities with minor gaps
+  B: Good — solid baseline, some limitations
+  C: Mediocre — minimal viable capability
+  D: Poor — technically possible but major friction
+  F: Fail — no meaningful capability
+
+overall:
+  weights:
+    read: 0.25
+    ownership: 0.20
+    delete: 0.20
+    understand: 0.15
+    write: 0.10
+    agent_friendly: 0.10
+  grade_to_score:
+    S: 100
+    A: 80
+    B: 60
+    C: 40
+    D: 20
+    F: 0
+  score_to_grade:
+    - { min: 90, grade: S }
+    - { min: 75, grade: A }
+    - { min: 55, grade: B }
+    - { min: 35, grade: C }
+    - { min: 15, grade: D }
+    - { min: 0, grade: F }
+
 criteria:
   - id: read
     name: Read
@@ -7,10 +41,6 @@ criteria:
       programmatically — via API, bulk export, sync, or real-time streaming? Covers
       both batch (download a ZIP) and incremental (API, webhooks) access. Completeness
       and freshness of the data matter too.
-    values:
-      yes: Full access — complete data via API, export, or sync, including real-time or near-real-time
-      partial: Some access but limited — partial export, restricted API, delayed data, or device-only
-      no: No way to get your data out of the product
 
   - id: write
     name: Write
@@ -19,10 +49,6 @@ criteria:
       Can you bring data into the product from outside? Import from another service,
       restore from a backup, push via API, or bulk upload. This is about getting data
       in, not just creating it through the product's own UI.
-    values:
-      yes: Full write access — API, import, or bulk upload supported
-      partial: Limited write — only certain data types, manual import only, or restricted API
-      no: No way to bring data in from outside the product
 
   - id: understand
     name: Understand
@@ -32,10 +58,6 @@ criteria:
       (JSON, CSV, XML) with clear schema and documentation? Or is it a proprietary
       blob of IDs and encoded fields that requires reverse-engineering? If the data is
       understandable, it's portable — humans and AI agents can interpret and move it.
-    values:
-      yes: Open standard formats with clear, documented schema
-      partial: Open format but proprietary or undocumented schema — requires effort to interpret
-      no: Proprietary or binary format, effectively unreadable without the original product
 
   - id: delete
     name: Delete
@@ -44,24 +66,16 @@ criteria:
       Can you truly remove your data — not just hide it? This includes deletion from
       backups and a clear retention policy. Covers both granular deletion (individual
       records) and full account data removal.
-    values:
-      yes: Full deletion with clear policy, including removal from backups
-      partial: Can delete some data, but unclear retention policy or incomplete removal
-      no: No deletion capability, or data persists after account closure
 
   - id: ownership
     name: Ownership
-    question: Do they own my data?
+    question: Do I own my data?
     note: >
       Even if you can export your data, does the platform claim rights over it? Some
       services grant themselves broad licenses to use, sublicense, or sell your data —
       for ad targeting, AI training, or third-party sales. This criterion checks whether
       the platform treats your data as theirs to exploit, beyond what's needed to
-      provide the service.
-    values:
-      yes: They own or broadly license your data — ToS allows use for AI training, ads, resale, etc.
-      partial: Broad license in ToS but limited in practice, or unclear terms
-      no: Your data is yours — platform only uses it to provide the service
+      provide the service. Higher grade = more user ownership.
 
   - id: agent_friendly
     name: Agent
@@ -72,7 +86,3 @@ criteria:
       machine-readable formats, no CAPTCHAs or anti-automation barriers, and
       support for OAuth or token-based auth. A product can score well on individual
       criteria but still fail here if everything requires clicking through a UI.
-    values:
-      yes: Full programmatic access — documented APIs, standard auth, machine-readable data
-      partial: Some automation possible but with significant friction — undocumented API, scraping required, or manual steps involved
-      no: No programmatic access — all interactions require manual UI usage

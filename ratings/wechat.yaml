@@ -2,12 +2,16 @@ date: 2026-03-12
 models:
   - claude-sonnet-4-20250514
 
+overall:
+  grade: D
+  score: 22
+
 criteria:
   read:
-    value: partial
+    grade: C
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: C
         checks:
           - id: bulk-export
             result: true
@@ -28,13 +32,13 @@ criteria:
           - id: realtime-read
             result: false
             evidence: "No real-time or streaming read access is available for individual users to access their personal data programmatically."
-    notes: "WeChat offers a limited bulk export of server-side data (Moments, Favorites, account info) but excludes chat history. No individual-facing API for reading personal data."
+    notes: "Limited bulk export exists (Moments, Favorites only — excludes chats). No open format, no API, no real-time. Grade C: bulk-export only."
 
   write:
-    value: "no"
+    grade: F
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: F
         checks:
           - id: import-from-file
             result: false
@@ -50,13 +54,13 @@ criteria:
           - id: bulk-upload
             result: false
             evidence: "No bulk upload mechanism exists for individual users to import data into WeChat."
-    notes: "WeChat is essentially a closed system for data ingestion. No file import, no service migration, and no API write access for individual users."
+    notes: "All checks fail. No file import, no service migration, no API write, no bulk upload. Grade F."
 
   understand:
-    value: "no"
+    grade: F
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: F
         checks:
           - id: open-format
             result: false
@@ -71,13 +75,13 @@ criteria:
           - id: human-readable
             result: false
             evidence: "Without documented formats or schemas, and with password-protected proprietary packaging, the exported data is not readily human-readable without reverse engineering."
-    notes: "WeChat provides no documentation on the format or schema of exported data. The lack of transparency makes it difficult to interpret the data."
+    notes: "All checks fail. No open format, no documented schema, not human-readable. Grade F."
 
   delete:
-    value: partial
+    grade: B
     by_model:
       claude-sonnet-4-20250514:
-        value: partial
+        grade: B
         checks:
           - id: granular-delete
             result: true
@@ -95,13 +99,13 @@ criteria:
             result: false
             evidence: "WeChat states that deleted data may still exist in backups or caches of other users and third parties. No stated timeline for backup removal."
             source: "https://www.wechat.com/en/privacy_policy.html"
-    notes: "WeChat supports granular and full account deletion, but lacks a clear published retention policy with specific timelines."
+    notes: "Granular and full deletion available, but no clear retention policy. Grade B: granular-delete AND full-delete."
 
   ownership:
-    value: "yes"
+    grade: F
     by_model:
       claude-sonnet-4-20250514:
-        value: "yes"
+        grade: F
         checks:
           - id: broad-license
             result: true
@@ -119,13 +123,13 @@ criteria:
             result: true
             evidence: "WeChat Ads uses user behavioral data, interests, demographics, location, and Mini Program usage to enable precision-targeted advertising."
             source: "https://www.w-4.ch/en/wechat-ads"
-    notes: "WeChat's ToS grants Tencent a very broad, perpetual, sub-licensable license over user content, combined with extensive use of user data for AI-powered ad targeting."
+    notes: "Broad perpetual license, AI training without opt-in, aggressive ad targeting. Grade F: broad-license AND (ai-training OR ad-targeting)."
 
   agent_friendly:
-    value: "no"
+    grade: F
     by_model:
       claude-sonnet-4-20250514:
-        value: "no"
+        grade: F
         checks:
           - id: documented-api
             result: false
@@ -146,7 +150,7 @@ criteria:
             result: false
             evidence: "Individual users cannot perform read, write, or delete operations on their personal data via API. The API is limited to business-facing operations."
             source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
-    notes: "While WeChat has documented APIs with standard auth and JSON output, these are exclusively for business operators. No programmatic CRUD access exists for personal data."
+    notes: "APIs exist only for business operators. No personal data CRUD for individuals. Grade F: no programmatic access for personal data."
 
 links:
   - label: "WeChat Terms of Service"

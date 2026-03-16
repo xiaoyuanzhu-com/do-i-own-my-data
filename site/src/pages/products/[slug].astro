@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import RatingBadge from '../../components/RatingBadge.astro';
 import ProductLogo from '../../components/ProductLogo.astro';
-import { loadProducts, loadCriteriaSchema, summarizeCriteria } from '../../data/products';
+import { loadProducts, loadCriteriaSchema, summarizeGrades } from '../../data/products';
 
 export function getStaticPaths() {
   const products = loadProducts();
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 const { product } = Astro.props;
 const criteriaSchema = loadCriteriaSchema();
 const criteriaIds = criteriaSchema.map((criterion) => criterion.id);
-const summary = summarizeCriteria(product, criteriaIds);
+const summary = summarizeGrades(product, criteriaIds);
 
 function formatDate(value: unknown): string {
   if (!value) return '';
@@ -39,9 +39,12 @@ function formatDate(value: unknown): string {
           />
           <span>{product.name}</span>
         </h1>
-        <p class="support-summary">
-          {summary.yes} yes · {summary.partial} partial · {summary.no} no
-        </p>
+        {product.overall && (
+          <p class="support-summary">
+            Overall: <RatingBadge grade={product.overall.grade} />
+            <span class="overall-score">({product.overall.score})</span>
+          </p>
+        )}
       </div>
 
       <p class="detail-meta">
@@ -93,9 +96,10 @@ function formatDate(value: unknown): string {
 
   <section class="page-shell">
     <div class="section-copy">
-      <h2 class="section-title">Detailed ratings</h2>
+      <h2 class="section-title">Detailed grades</h2>
       <p class="section-note">
-        Each criterion explains what was scored and includes the product-specific review notes.
+        Each criterion explains what was evaluated and includes the product-specific review notes.
+        Grades range from S (best) to F (worst).
       </p>
     </div>
 
@@ -109,7 +113,7 @@ function formatDate(value: unknown): string {
                 <h3>{criterion.name}</h3>
                 <p class="criteria-question">{criterion.question}</p>
               </div>
-              <RatingBadge rating={entry?.rating} />
+              <RatingBadge grade={entry?.grade} />
             </div>
             <p class="criterion-copy">{entry?.notes || 'No review notes have been added for this criterion yet.'}</p>
             {entry?.by_model && (
@@ -117,7 +121,7 @@ function formatDate(value: unknown): string {
                 <summary>View per-check evidence ({Object.keys(entry.by_model).length} model{Object.keys(entry.by_model).length > 1 ? 's' : ''})</summary>
                 {Object.entries(entry.by_model).map(([model, result]) => (
                   <div class="model-section">
-                    <h4>{model} — <RatingBadge rating={result.value} /></h4>
+                    <h4>{model} — <RatingBadge grade={result.grade} /></h4>
                     <ul class="checks">
                       {result.checks.map(check => (
                         <li class={check.result ? 'check-pass' : 'check-fail'}>

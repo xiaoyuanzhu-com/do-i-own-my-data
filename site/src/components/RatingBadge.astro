@@ -1,10 +1,12 @@
 ---
+import type { Grade } from '../data/products';
+
 interface Props {
-  rating: 'yes' | 'partial' | 'no' | undefined;
+  grade: Grade | undefined;
 }
-const { rating } = Astro.props;
-const label = rating ? rating[0].toUpperCase() : '·';
-const fullLabel = rating ? rating[0].toUpperCase() + rating.slice(1) : 'Not rated';
-const className = rating ? `rating-${rating}` : 'rating-none';
+const { grade } = Astro.props;
+const label = grade ?? '·';
+const fullLabel = grade ?? 'Not rated';
+const className = grade ? `grade-${grade}` : 'grade-none';
 ---
-<span class={`rating-badge ${className}`} aria-label={fullLabel} title={fullLabel}>{label}</span>
+<span class={`grade-badge ${className}`} aria-label={fullLabel} title={fullLabel}>{label}</span>

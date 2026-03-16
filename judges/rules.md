@@ -1,10 +1,63 @@
 # Evaluation Rules
 
 These rules define how AI judges evaluate products. Each criterion has concrete yes/no
-checks. The scoring section maps check results to a final yes/partial/no rating.
+checks. The grading section maps check results to a final S/A/B/C/D/F grade.
+
+All grades are normalized so that higher = better for the user. S is the best possible
+grade, F is the worst.
 
 Judges must cite publicly available sources for every check. If evidence is insufficient
 or ambiguous, mark the check as false and note the gap. Do not speculate.
+
+## Grade Scale
+
+| Grade | Meaning |
+|-------|---------|
+| S | Perfect — all checks pass, exemplary data ownership |
+| A | Excellent — core capabilities present with minor gaps |
+| B | Good — solid baseline, some meaningful limitations |
+| C | Mediocre — minimal viable capability, significant gaps |
+| D | Poor — technically possible but with major friction |
+| F | Fail — no meaningful capability |
+
+## Overall Grade
+
+The overall grade for a product is a weighted average of all criterion grades.
+
+### Grade-to-score mapping
+
+| Grade | Score |
+|-------|-------|
+| S | 100 |
+| A | 80 |
+| B | 60 |
+| C | 40 |
+| D | 20 |
+| F | 0 |
+
+### Weights
+
+| Criterion | Weight |
+|-----------|--------|
+| Read | 25% |
+| Ownership | 20% |
+| Delete | 20% |
+| Understand | 15% |
+| Write | 10% |
+| Agent | 10% |
+
+### Score-to-grade mapping
+
+| Overall Grade | Score Range |
+|---------------|-------------|
+| S | 90–100 |
+| A | 75–89 |
+| B | 55–74 |
+| C | 35–54 |
+| D | 15–34 |
+| F | 0–14 |
+
+---
 
 ## Read — Can I read my data?
 
@@ -16,11 +69,14 @@ or ambiguous, mark the check as false and note the gap. Do not speculate.
 - **api-read**: Can data be read programmatically via a documented API?
 - **realtime-read**: Is near-real-time or streaming read access available (webhooks, subscriptions, live sync)?
 
-### Scoring
+### Grading
 
-- **yes**: bulk-export AND covers-all-types AND (open-format OR api-read)
-- **partial**: bulk-export OR api-read
-- **no**: NOT bulk-export AND NOT api-read
+- **S**: All 5 checks pass
+- **A**: bulk-export AND covers-all-types AND (open-format OR api-read)
+- **B**: bulk-export AND (open-format OR api-read)
+- **C**: bulk-export OR api-read
+- **D**: Some data access exists but with major friction (e.g., record-by-record download, screenshot-only, copy-paste)
+- **F**: No way to get data out
 
 ## Write — Can I write my data?
 
@@ -31,11 +87,14 @@ or ambiguous, mark the check as false and note the gap. Do not speculate.
 - **api-write**: Can data be written programmatically via a documented API?
 - **bulk-upload**: Is bulk upload supported (not just one-by-one)?
 
-### Scoring
+### Grading
 
-- **yes**: api-write AND (import-from-file OR bulk-upload)
-- **partial**: import-from-file OR import-from-service OR api-write
-- **no**: NOT import-from-file AND NOT import-from-service AND NOT api-write
+- **S**: All 4 checks pass
+- **A**: api-write AND (import-from-file OR bulk-upload)
+- **B**: api-write OR (import-from-file AND import-from-service)
+- **C**: import-from-file OR import-from-service OR api-write
+- **D**: Some write path exists but with major friction (e.g., manual data entry only, no import)
+- **F**: No way to bring data in from outside the product
 
 ## Understand — Can I understand my data?
 
@@ -46,11 +105,14 @@ or ambiguous, mark the check as false and note the gap. Do not speculate.
 - **standard-schema**: Does the data follow an industry-standard schema (not vendor-specific)?
 - **human-readable**: Can a technically competent person read and interpret the data without vendor tools?
 
-### Scoring
+### Grading
 
-- **yes**: open-format AND documented-schema AND human-readable
-- **partial**: open-format AND human-readable
-- **no**: NOT open-format OR NOT human-readable
+- **S**: All 4 checks pass
+- **A**: open-format AND documented-schema AND human-readable
+- **B**: open-format AND human-readable
+- **C**: open-format OR human-readable
+- **D**: Data is technically accessible but requires significant reverse-engineering
+- **F**: Proprietary or binary format, effectively unreadable without the original product
 
 ## Delete — Can I delete my data?
 
@@ -61,15 +123,19 @@ or ambiguous, mark the check as false and note the gap. Do not speculate.
 - **clear-retention**: Is there a clear, published data retention policy?
 - **backup-removal**: Does deletion include removal from backups (or a stated timeline)?
 
-### Scoring
+### Grading
 
-- **yes**: granular-delete AND full-delete AND clear-retention
-- **partial**: full-delete OR granular-delete
-- **no**: NOT full-delete AND NOT granular-delete
+- **S**: All 4 checks pass
+- **A**: granular-delete AND full-delete AND clear-retention
+- **B**: granular-delete AND full-delete
+- **C**: full-delete OR granular-delete
+- **D**: Some deletion exists but with major friction (e.g., must contact support, unclear process)
+- **F**: No deletion capability, or data persists after account closure
 
-## Ownership — Do they own my data?
+## Ownership — Do I own my data?
 
-Note: this criterion is "bad" when yes — yes means THEY own your data.
+Note: All grades are normalized so that higher = better for the user. S means the user
+fully owns their data with no exploitation. F means the company fully exploits user data.
 
 ### Checks
 
@@ -78,11 +144,14 @@ Note: this criterion is "bad" when yes — yes means THEY own your data.
 - **data-selling**: Does the company sell or share user data with third parties for advertising or monetization?
 - **ad-targeting**: Is user data used for targeted advertising?
 
-### Scoring
+### Grading
 
-- **yes** (they own it): broad-license AND (ai-training OR data-selling OR ad-targeting)
-- **partial**: broad-license OR ai-training
-- **no** (you own it): NOT broad-license AND NOT ai-training AND NOT data-selling AND NOT ad-targeting
+- **S**: NOT broad-license AND NOT ai-training AND NOT data-selling AND NOT ad-targeting (user fully owns data, no exploitation)
+- **A**: NOT ai-training AND NOT data-selling AND NOT ad-targeting (minor broad-license for service operation only)
+- **B**: NOT data-selling AND NOT ad-targeting (some broad license or AI training, but no monetization of user data)
+- **C**: broad-license OR ai-training (some exploitation, but not aggressive)
+- **D**: broad-license AND (ai-training OR data-selling) (significant exploitation)
+- **F**: broad-license AND (ai-training OR data-selling OR ad-targeting) (full exploitation — company treats user data as its own)
 
 ## Agent-Friendly — Is it agent-friendly?
 
@@ -94,8 +163,11 @@ Note: this criterion is "bad" when yes — yes means THEY own your data.
 - **machine-readable-output**: Does the API return machine-readable formats (JSON, XML)?
 - **programmatic-crud**: Can all core operations (read, write, delete) be done via API without manual UI steps?
 
-### Scoring
+### Grading
 
-- **yes**: documented-api AND standard-auth AND machine-readable-output AND programmatic-crud
-- **partial**: documented-api OR (api exists but with significant friction)
-- **no**: NOT documented-api AND no programmatic access
+- **S**: All 5 checks pass
+- **A**: documented-api AND standard-auth AND machine-readable-output AND programmatic-crud
+- **B**: documented-api AND standard-auth AND machine-readable-output
+- **C**: documented-api OR (API exists but with significant friction)
+- **D**: Some programmatic access exists but undocumented or requires scraping
+- **F**: No programmatic access — all interactions require manual UI usage
