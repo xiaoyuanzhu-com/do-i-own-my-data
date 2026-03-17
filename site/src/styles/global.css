@@ -1353,15 +1353,18 @@ h3 {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 0.6rem;
+    gap: 0.4rem 0.5rem;
     min-height: 48px;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
 
   .comparison-product {
-    flex: 1 1 0;
+    flex: 1 0 100%;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .comparison-criterion {
@@ -1373,11 +1376,14 @@ h3 {
   }
 
   .comparison-chevron {
-    flex: 0 0 auto;
-    margin-left: 0.25rem;
+    display: none;
   }
 
-  #list-filter,
+  #list-filter {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
   .results-copy {
     width: 100%;
     text-align: left;
