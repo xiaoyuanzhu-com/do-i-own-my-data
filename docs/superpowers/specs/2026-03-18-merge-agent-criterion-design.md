@@ -103,6 +103,10 @@ Note: Grade A is identical to the old rule. The 3 new API checks only differenti
 
 ## Migration
 
+### Ordering
+
+To avoid intermediate validation failures, apply changes in this order: (1) rating files, (2) schema and rules, (3) validation script, (4) site code and README. Alternatively, land everything in a single atomic commit.
+
 ### Rating Files
 
 For each existing rating file:
@@ -110,19 +114,19 @@ For each existing rating file:
 1. Copy `documented-api`, `standard-auth`, `no-anti-automation` checks (with evidence and sources) from the `agent_friendly` `by_model` section into both `read` and `write` `by_model` sections
 2. Drop `machine-readable-output` and `programmatic-crud` checks (redundant)
 3. Remove the `agent_friendly` criterion block entirely
-4. Re-evaluate Read and Write grades against the new grading rules
+4. Re-evaluate Read and Write grades against the new grading rules (A and below should be unchanged; verify any existing S grades still pass with 3 additional checks)
 5. Recompute overall scores with the new weights
 
 ### Schema and Docs
 
 - `schema/criteria.yaml` — remove `agent_friendly` entry, update weights to Read 30% / Write 15%
 - `judges/rules.md` — remove Agent section, update Read and Write with new checks and grading rules, update weights table
-- `README.md` — change "6 criteria" to "5 criteria", remove Agent row from table, update criterion descriptions
+- `README.md` — change all instances of "6 criteria" to "5 criteria", remove Agent row from table, update criterion descriptions, update contribution instructions
 
 ### Site Code
 
-- `site/src/data/products.ts` — remove `agent_friendly` from types and data loading logic
-- `site/src/pages/index.astro` — remove `agent_friendly` from `criteriaGroups` array, adjust grid columns from 6 to 5
+- `site/src/data/products.ts` — verify whether `agent_friendly` is referenced directly or loaded dynamically from schema; update only if needed
+- `site/src/pages/index.astro` — remove `agent_friendly` from `criteriaGroups` Control group (leaving `['delete', 'ownership']`), verify grid layout adapts dynamically
 - `site/src/pages/about.astro` — change "six criteria" to "five criteria" in meta description and heading, remove Agent from criteria list
 - Any other hardcoded criterion lists or iteration over 6 criteria
 
