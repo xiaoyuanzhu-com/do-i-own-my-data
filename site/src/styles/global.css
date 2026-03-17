@@ -1345,52 +1345,42 @@ h3 {
     min-height: 0;
   }
 
-  .comparison-head,
-  .comparison-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .comparison-head {
     display: none;
   }
 
   .comparison-row {
-    gap: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.6rem;
     min-height: 48px;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
+  }
+
+  .comparison-product {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .comparison-criterion {
+    width: auto;
+  }
+
+  .comparison-criterion::before {
+    display: none;
+  }
+
+  .comparison-chevron {
+    flex: 0 0 auto;
+    margin-left: 0.25rem;
   }
 
   #list-filter,
   .results-copy {
     width: 100%;
     text-align: left;
-  }
-
-  .comparison-criterion::before {
-    display: inline-block;
-    margin-right: 0.45rem;
-    color: var(--muted);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-  }
-
-  .comparison-criterion {
-    width: 100%;
-  }
-
-  .comparison-criterion::before {
-    content: attr(data-label);
-  }
-
-  .comparison-criterion .rating-badge {
-    justify-content: center;
-  }
-
-  .comparison-chevron {
-    justify-self: start;
   }
 
   .support-summary {
