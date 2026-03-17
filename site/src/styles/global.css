@@ -1412,7 +1412,9 @@ h3 {
 
   .comparison-criterion {
     width: auto;
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    display: flex;
+    justify-content: center;
   }
 
   .comparison-criterion::before {
