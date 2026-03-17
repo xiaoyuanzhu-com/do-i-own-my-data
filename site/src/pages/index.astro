@@ -46,14 +46,15 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
       <p class="results-copy" data-filter-results hidden></p>
     </div>
 
-    <div class="comparison-stage">
-      <div class="comparison-head" aria-hidden="true">
-        <span>Product</span>
-        <span>Overall</span>
-        {criteriaSchema.map((criterion) => <span>{criterion.name}</span>)}
+    <div class="comparison-stage" role="table" aria-label="Product ratings comparison">
+      <div class="comparison-head" role="row">
+        <span role="columnheader">Product</span>
+        <span role="columnheader">Overall</span>
+        {criteriaSchema.map((criterion) => <span role="columnheader">{criterion.name}</span>)}
+        <span role="columnheader"><span class="sr-only">Details</span></span>
       </div>
 
-      <div class="comparison-list">
+      <div class="comparison-list" role="rowgroup">
         {products.map((product) => {
           return (
             <article
@@ -65,11 +66,13 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
               <button
                 class="comparison-row"
                 type="button"
+                role="row"
                 aria-expanded="false"
                 aria-controls={`detail-${product.slug}`}
+                aria-label={`${product.name} — Overall: ${product.overall?.grade ?? 'not rated'}, ${criteriaSchema.map((c) => `${c.name}: ${product.criteria[c.id]?.grade ?? 'not rated'}`).join(', ')}`}
                 data-row-trigger
               >
-                <span class="comparison-product">
+                <span class="comparison-product" role="cell">
                   <span class="product-identity">
                     <ProductLogo
                       name={product.name}
@@ -83,16 +86,20 @@ function hasVisibleNotes(product: (typeof products)[number], ids: string[]) {
                   </span>
                 </span>
                 <span
+                  role="cell"
                   class="comparison-criterion"
                   data-label="Overall"
+                  aria-label={`Overall: ${product.overall?.grade ?? 'not rated'}`}
                   title={`Overall: ${product.overall?.grade ?? 'not rated'}${product.overall?.score ? ` (${product.overall.score})` : ''}`}
                 >
                   <RatingBadge grade={product.overall?.grade} />
                 </span>
                 {criteriaSchema.map((criterion) => (
                   <span
+                    role="cell"
                     class="comparison-criterion"
                     data-label={criterion.name}
+                    aria-label={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.grade ?? 'not rated'}`}
                     title={`${criterionLabel(criterion.id)}: ${product.criteria[criterion.id]?.grade ?? 'not rated'}`}
                   >
                     <RatingBadge grade={product.criteria[criterion.id]?.grade} />

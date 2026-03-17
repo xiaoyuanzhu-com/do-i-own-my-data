@@ -60,7 +60,7 @@ function formatDate(value: unknown): string {
       </div>
     </article>
 
-    <aside class="detail-side">
+    <aside class="detail-side" aria-label="Review details">
       <section class="detail-section">
         <h2>Review snapshot</h2>
         <div class="detail-stats">
@@ -84,7 +84,7 @@ function formatDate(value: unknown): string {
               <li>
                 <a class="source-link" href={link.url} target="_blank" rel="noreferrer">
                   <span class="source-label">{link.label}</span>
-                  <span class="source-note">Open source</span>
+                  <span class="source-note">{new URL(link.url).hostname.replace('www.', '')}</span>
                 </a>
               </li>
             ))}
