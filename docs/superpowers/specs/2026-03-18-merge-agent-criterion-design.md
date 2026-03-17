@@ -60,31 +60,44 @@ Agent's 5 checks are handled as follows:
 
 No check changes. Weights unchanged.
 
+### Note on Duplicated Checks
+
+`documented-api`, `standard-auth`, and `no-anti-automation` appear in both Read and Write but are **evaluated independently per criterion**. The same check ID may have different results. For example, Google Photos has a documented write API but deprecated its read API — `documented-api` would be false in Read but true in Write. For products with no API at all, all three checks are simply false.
+
 ## Updated Grading Rules
 
-Design principle: the new API checks **raise the ceiling but don't lower the floor**. Products without APIs aren't penalized harder than before. But reaching S now requires proper API accessibility.
+Design principle: the new API checks **raise the ceiling but don't lower the floor**. Products without APIs aren't penalized harder than before. B/C/D/F grades are unchanged from the old rules. Only S and A are affected:
+
+- **S** requires all checks including the new API ones
+- **A** keeps its old rule unchanged — the API checks are not required at A
+
+This ensures products like Google Photos (excellent bulk export in open formats, no read API) retain their current A grade.
 
 ### Read
 
 | Grade | Rule |
 |-------|------|
 | S | All 8 checks pass |
-| A | bulk-export AND covers-all-types AND api-read AND documented-api |
+| A | bulk-export AND covers-all-types AND (open-format OR api-read) |
 | B | bulk-export AND (open-format OR api-read) |
 | C | bulk-export OR api-read |
 | D | Some data access but major friction |
 | F | No way to get data out |
+
+Note: Grade A is identical to the old rule. The 3 new API checks (`documented-api`, `standard-auth`, `no-anti-automation`) only differentiate S from A.
 
 ### Write
 
 | Grade | Rule |
 |-------|------|
 | S | All 7 checks pass |
-| A | api-write AND documented-api AND (import-from-file OR bulk-upload) |
+| A | api-write AND (import-from-file OR bulk-upload) |
 | B | api-write OR (import-from-file AND import-from-service) |
 | C | import-from-file OR import-from-service OR api-write |
 | D | Some write path but major friction |
 | F | No way to bring data in |
+
+Note: Grade A is identical to the old rule. The 3 new API checks only differentiate S from A.
 
 ### Understand, Delete, Ownership — Grading Unchanged
 
@@ -109,12 +122,13 @@ For each existing rating file:
 ### Site Code
 
 - `site/src/data/products.ts` — remove `agent_friendly` from types and data loading logic
-- UI components displaying criterion badges/columns — reduce from 6 to 5
-- Any hardcoded criterion lists or iteration over 6 criteria
+- `site/src/pages/index.astro` — remove `agent_friendly` from `criteriaGroups` array, adjust grid columns from 6 to 5
+- `site/src/pages/about.astro` — change "six criteria" to "five criteria" in meta description and heading, remove Agent from criteria list
+- Any other hardcoded criterion lists or iteration over 6 criteria
 
 ### Validation
 
-- `scripts/validate.py` — update expected criteria list, update overall score computation to use new weights, remove agent_friendly from required fields
+- `scripts/validate.py` — update expected criteria list, remove `"Agent-Friendly": "agent_friendly"` from `HEADER_TO_CRITERION` dict, update overall score computation to use new weights
 
 ## Score-to-Grade Mapping — Unchanged
 
