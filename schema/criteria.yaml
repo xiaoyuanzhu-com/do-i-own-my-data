@@ -11,12 +11,11 @@ grades:
 
 overall:
   weights:
-    read: 0.25
+    read: 0.30
     ownership: 0.20
     delete: 0.20
     understand: 0.15
-    write: 0.10
-    agent_friendly: 0.10
+    write: 0.15
   grade_to_score:
     S: 100
     A: 80
@@ -77,12 +76,3 @@ criteria:
       the platform treats your data as theirs to exploit, beyond what's needed to
       provide the service. Higher grade = more user ownership.
 
-  - id: agent_friendly
-    name: Agent
-    question: Is it agent-friendly?
-    note: >
-      Can an AI agent perform all of the above (read, write, understand, delete)
-      programmatically and without manual steps? This means well-documented APIs,
-      machine-readable formats, no CAPTCHAs or anti-automation barriers, and
-      support for OAuth or token-based auth. A product can score well on individual
-      criteria but still fail here if everything requires clicking through a UI.
