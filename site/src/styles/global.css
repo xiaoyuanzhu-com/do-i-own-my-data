@@ -617,7 +617,7 @@ h3 {
 .comparison-head {
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(0, 1.95fr) repeat(7, minmax(72px, 0.7fr)) 2rem;
+  grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(72px, 0.7fr)) 2rem;
   gap: 1rem;
   min-height: var(--comparison-row-height);
   align-items: center;
@@ -655,7 +655,7 @@ h3 {
   width: 100%;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(0, 1.95fr) repeat(7, minmax(72px, 0.7fr)) 2rem;
+  grid-template-columns: minmax(0, 1.95fr) repeat(6, minmax(72px, 0.7fr)) 2rem;
   gap: 1rem;
   min-height: var(--comparison-row-height);
   align-items: center;
