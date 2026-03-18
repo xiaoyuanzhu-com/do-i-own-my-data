@@ -81,7 +81,7 @@ criteria:
             result: true
             evidence: "The API uses standard rate limiting without CAPTCHAs or anti-bot barriers for authenticated API access."
             source: "https://developers.google.com/photos/overview/api-limits-quotas"
-    notes: "All 4 checks pass: file import, service migration, API write, and bulk upload. Grade S."
+    notes: "All 7 checks pass: file import, service migration, API write, bulk upload, documented API with standard auth. Grade S."
 
   understand:
     grade: B

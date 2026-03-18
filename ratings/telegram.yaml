@@ -45,7 +45,7 @@ criteria:
             result: true
             evidence: "There are no CAPTCHAs or anti-bot barriers for API usage. Rate limits are reasonable and well-documented, with paid options to increase them."
             source: "https://core.telegram.org/bots/faq"
-    notes: "All 5 checks pass. Comprehensive export, full API access, real-time streaming. Grade S."
+    notes: "All 8 checks pass. Comprehensive export, full API access, real-time streaming, documented API with standard auth. Grade S."
 
   write:
     grade: S
@@ -81,7 +81,7 @@ criteria:
             result: true
             evidence: "There are no CAPTCHAs or anti-bot barriers for API usage. Rate limits are reasonable and well-documented, with paid options to increase them."
             source: "https://core.telegram.org/bots/faq"
-    notes: "All 4 checks pass. File import, service migration, API write, and bulk upload all available. Grade S."
+    notes: "All 7 checks pass. File import, service migration, API write, bulk upload, documented API with standard auth. Grade S."
 
   understand:
     grade: A

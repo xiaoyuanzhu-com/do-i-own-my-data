@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - `registry/` stores one YAML file per product with metadata.
-- `ratings/` stores one YAML file per product with the six criteria, notes, and source links.
+- `ratings/` stores one YAML file per product with the five criteria, notes, and source links.
 - `schema/criteria.yaml` defines the canonical criteria IDs and rating meanings.
 - `scripts/validate.py` validates YAML structure and slug alignment; Python dependencies live in `scripts/requirements.txt`.
 - `site/` contains the Astro site. Main app code lives in `site/src/`, static assets in `site/public/`, and product loading logic in `site/src/data/products.ts`.
