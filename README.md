@@ -4,11 +4,11 @@ A community-driven directory that rates products on how friendly they are toward
 
 ## What is this?
 
-Many apps and services collect your data but make it hard to access, export, or move it elsewhere. This project evaluates products against six concrete criteria so consumers can make informed choices about where their data lives.
+Many apps and services collect your data but make it hard to access, export, or move it elsewhere. This project evaluates products against five concrete criteria so consumers can make informed choices about where their data lives.
 
 Each product has a **registry entry** (what it is) and a **rating** (how it scores on data ownership). Ratings use a simple scale: **yes**, **partial**, or **no**.
 
-## The 6 criteria
+## The 5 criteria
 
 | Criterion | Question |
 |-----------|----------|
@@ -17,7 +17,6 @@ Each product has a **registry entry** (what it is) and a **rating** (how it scor
 | **Understand** | Can I understand my data? |
 | **Delete** | Can I delete my data? |
 | **Ownership** | Do they own my data? |
-| **Agent** | Is it agent-friendly? |
 
 > **Read** — not just viewing in the app. Can you export, download, or access your data programmatically (API, sync, bulk export, real-time streaming)?
 >
@@ -28,8 +27,6 @@ Each product has a **registry entry** (what it is) and a **rating** (how it scor
 > **Delete** — true deletion, not just hiding. Is your data actually gone?
 >
 > **Ownership** — does the platform claim rights over your data? Can they use it for AI training, ads, resale?
->
-> **Agent** — can an AI agent do all the above programmatically, without manual steps?
 
 See `schema/criteria.yaml` for the full definitions including what yes/partial/no means for each.
 
@@ -45,7 +42,7 @@ Example: `registry/apple-health.yaml` and `ratings/apple-health.yaml`.
 ## How to contribute
 
 1. **Add a registry entry** -- create `registry/<product-name>.yaml` with fields: `name`, `website`, `description`, `vendor`, `tags`
-2. **Add a rating** (optional) -- create `ratings/<product-name>.yaml` with a `criteria` section rating each of the 6 criteria, plus `links` to sources
+2. **Add a rating** (optional) -- create `ratings/<product-name>.yaml` with a `criteria` section rating each of the 5 criteria, plus `links` to sources
 3. **Submit a PR**
 
 Filename convention: **lowercase-hyphenated** (e.g., `google-photos.yaml`, `apple-health.yaml`).
