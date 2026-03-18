@@ -39,12 +39,11 @@ The overall grade for a product is a weighted average of all criterion grades.
 
 | Criterion | Weight |
 |-----------|--------|
-| Read | 25% |
+| Read | 30% |
 | Ownership | 20% |
 | Delete | 20% |
 | Understand | 15% |
-| Write | 10% |
-| Agent | 10% |
+| Write | 15% |
 
 ### Score-to-grade mapping
 
@@ -68,10 +67,13 @@ The overall grade for a product is a weighted average of all criterion grades.
 - **open-format**: Is the exported data in an open/standard format (JSON, CSV, XML, etc.)?
 - **api-read**: Can data be read programmatically via a documented API?
 - **realtime-read**: Is near-real-time or streaming read access available (webhooks, subscriptions, live sync)?
+- **documented-api**: Is there a publicly documented API for reading data that individuals (not just businesses) can use?
+- **standard-auth**: Does the API use standard authentication (OAuth, API keys, tokens)?
+- **no-anti-automation**: Are there no CAPTCHAs, rate walls, or anti-bot barriers for API usage?
 
 ### Grading
 
-- **S**: All 5 checks pass
+- **S**: All 8 checks pass
 - **A**: bulk-export AND covers-all-types AND (open-format OR api-read)
 - **B**: bulk-export AND (open-format OR api-read)
 - **C**: bulk-export OR api-read
@@ -86,10 +88,13 @@ The overall grade for a product is a weighted average of all criterion grades.
 - **import-from-service**: Can the user migrate data from another service?
 - **api-write**: Can data be written programmatically via a documented API?
 - **bulk-upload**: Is bulk upload supported (not just one-by-one)?
+- **documented-api**: Is there a publicly documented API for writing data that individuals (not just businesses) can use?
+- **standard-auth**: Does the API use standard authentication (OAuth, API keys, tokens)?
+- **no-anti-automation**: Are there no CAPTCHAs, rate walls, or anti-bot barriers for API usage?
 
 ### Grading
 
-- **S**: All 4 checks pass
+- **S**: All 7 checks pass
 - **A**: api-write AND (import-from-file OR bulk-upload)
 - **B**: api-write OR (import-from-file AND import-from-service)
 - **C**: import-from-file OR import-from-service OR api-write
@@ -152,22 +157,3 @@ fully owns their data with no exploitation. F means the company fully exploits u
 - **C**: broad-license OR ai-training (some exploitation, but not aggressive)
 - **D**: broad-license AND (ai-training OR data-selling) (significant exploitation)
 - **F**: broad-license AND (ai-training OR data-selling OR ad-targeting) (full exploitation — company treats user data as its own)
-
-## Agent-Friendly — Is it agent-friendly?
-
-### Checks
-
-- **documented-api**: Is there a publicly documented API that individuals (not just businesses) can use?
-- **standard-auth**: Does the API use standard authentication (OAuth, API keys, tokens)?
-- **no-anti-automation**: Are there no CAPTCHAs, rate walls, or anti-bot barriers for API usage?
-- **machine-readable-output**: Does the API return machine-readable formats (JSON, XML)?
-- **programmatic-crud**: Can all core operations (read, write, delete) be done via API without manual UI steps?
-
-### Grading
-
-- **S**: All 5 checks pass
-- **A**: documented-api AND standard-auth AND machine-readable-output AND programmatic-crud
-- **B**: documented-api AND standard-auth AND machine-readable-output
-- **C**: documented-api OR (API exists but with significant friction)
-- **D**: Some programmatic access exists but undocumented or requires scraping
-- **F**: No programmatic access — all interactions require manual UI usage
