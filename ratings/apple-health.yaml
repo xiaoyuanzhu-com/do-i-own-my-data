@@ -4,7 +4,7 @@ models:
 
 overall:
   grade: B
-  score: 69
+  score: 71
 
 criteria:
   read:
@@ -33,6 +33,18 @@ criteria:
             result: true
             evidence: "HKObserverQuery provides near-real-time monitoring of the HealthKit store with background delivery support, updating apps when new samples are saved."
             source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
+          - id: documented-api
+            result: true
+            evidence: "HealthKit is a well-documented API available to any Apple Developer Program member ($99/year), with comprehensive documentation on developer.apple.com."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: standard-auth
+            result: false
+            evidence: "HealthKit uses on-device iOS permission dialogs for authorization, not standard web authentication like OAuth or API keys. There is no server-side API or token-based auth."
+            source: "https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data"
+          - id: no-anti-automation
+            result: true
+            evidence: "HealthKit has no CAPTCHAs or anti-bot barriers. Background delivery is supported for automated data collection."
+            source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
     notes: "Has bulk-export with open-format and api-read, but covers-all-types fails (excludes medications, raw sensor data). Grade B: bulk-export AND (open-format OR api-read)."
 
   write:
@@ -57,6 +69,18 @@ criteria:
             result: false
             evidence: "There is no native bulk upload feature. While the HealthKit API can write multiple samples, there is no built-in bulk import from files."
             source: "https://discussions.apple.com/thread/250998087"
+          - id: documented-api
+            result: true
+            evidence: "HealthKit is a well-documented API available to any Apple Developer Program member ($99/year), with comprehensive documentation on developer.apple.com."
+            source: "https://developer.apple.com/documentation/healthkit"
+          - id: standard-auth
+            result: false
+            evidence: "HealthKit uses on-device iOS permission dialogs for authorization, not standard web authentication like OAuth or API keys. There is no server-side API or token-based auth."
+            source: "https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data"
+          - id: no-anti-automation
+            result: true
+            evidence: "HealthKit has no CAPTCHAs or anti-bot barriers. Background delivery is supported for automated data collection."
+            source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
     notes: "Has api-write but no import-from-file or bulk-upload. Grade B: api-write passes."
 
   understand:
@@ -130,34 +154,6 @@ criteria:
             evidence: "Apple explicitly confirms that Health app data is not used by Apple Search Ads to deliver ads."
             source: "https://www.apple.com/legal/privacy/data/en/apple-advertising/"
     notes: "No broad license, no AI training, no data selling, no ad targeting. Users fully own their data. Grade S: all checks pass (no exploitation)."
-
-  agent_friendly:
-    grade: C
-    by_model:
-      claude-sonnet-4-20250514:
-        grade: C
-        checks:
-          - id: documented-api
-            result: true
-            evidence: "HealthKit is a well-documented API available to any Apple Developer Program member ($99/year), with comprehensive documentation on developer.apple.com."
-            source: "https://developer.apple.com/documentation/healthkit"
-          - id: standard-auth
-            result: false
-            evidence: "HealthKit uses on-device iOS permission dialogs for authorization, not standard web authentication like OAuth or API keys. There is no server-side API or token-based auth."
-            source: "https://developer.apple.com/documentation/healthkit/authorizing-access-to-health-data"
-          - id: no-anti-automation
-            result: true
-            evidence: "HealthKit has no CAPTCHAs or anti-bot barriers. Background delivery is supported for automated data collection."
-            source: "https://developer.apple.com/documentation/healthkit/hkobserverquery"
-          - id: machine-readable-output
-            result: true
-            evidence: "HealthKit returns structured data objects that are fully machine-readable. The export produces XML, and the API returns typed Swift/Objective-C objects."
-            source: "https://developer.apple.com/documentation/healthkit"
-          - id: programmatic-crud
-            result: false
-            evidence: "HealthKit requires a native iOS app to access data — there is no web API, REST API, or server-side programmatic access."
-            source: "https://www.themomentum.ai/blog/what-you-can-and-cant-do-with-apple-healthkit-data"
-    notes: "Documented API exists but with significant friction: iOS-only, no web API, no standard OAuth. Grade C: documented-api with significant friction."
 
 links:
   - label: "Apple Health & Privacy"

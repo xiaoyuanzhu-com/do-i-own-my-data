@@ -4,7 +4,7 @@ models:
 
 overall:
   grade: D
-  score: 22
+  score: 24
 
 criteria:
   read:
@@ -32,6 +32,17 @@ criteria:
           - id: realtime-read
             result: false
             evidence: "No real-time or streaming read access is available for individual users to access their personal data programmatically."
+          - id: documented-api
+            result: false
+            evidence: "WeChat's documented APIs (Official Account API, Mini Program API) are for business operators, not individual users. Full API access requires a Verified Service Account with a Chinese business entity."
+            source: "https://kawo.com/en/blog/how-to-open-a-wechat-official-account-oa-and-apply-for-verification"
+          - id: standard-auth
+            result: true
+            evidence: "The WeChat API uses OAuth 2.0 for authentication, which is a standard protocol."
+            source: "https://wechat-oauth2.readthedocs.io/en/latest/api.html"
+          - id: no-anti-automation
+            result: false
+            evidence: "WeChat actively restricts automation and has anti-bot measures. The platform restricts unofficial API usage and requires verified business accounts for programmatic access."
     notes: "Limited bulk export exists (Moments, Favorites only — excludes chats). No open format, no API, no real-time. Grade C: bulk-export only."
 
   write:
@@ -54,6 +65,17 @@ criteria:
           - id: bulk-upload
             result: false
             evidence: "No bulk upload mechanism exists for individual users to import data into WeChat."
+          - id: documented-api
+            result: false
+            evidence: "WeChat's documented APIs (Official Account API, Mini Program API) are for business operators, not individual users. Full API access requires a Verified Service Account with a Chinese business entity."
+            source: "https://kawo.com/en/blog/how-to-open-a-wechat-official-account-oa-and-apply-for-verification"
+          - id: standard-auth
+            result: true
+            evidence: "The WeChat API uses OAuth 2.0 for authentication, which is a standard protocol."
+            source: "https://wechat-oauth2.readthedocs.io/en/latest/api.html"
+          - id: no-anti-automation
+            result: false
+            evidence: "WeChat actively restricts automation and has anti-bot measures. The platform restricts unofficial API usage and requires verified business accounts for programmatic access."
     notes: "All checks fail. No file import, no service migration, no API write, no bulk upload. Grade F."
 
   understand:
@@ -124,33 +146,6 @@ criteria:
             evidence: "WeChat Ads uses user behavioral data, interests, demographics, location, and Mini Program usage to enable precision-targeted advertising."
             source: "https://www.w-4.ch/en/wechat-ads"
     notes: "Broad perpetual license, AI training without opt-in, aggressive ad targeting. Grade F: broad-license AND (ai-training OR ad-targeting)."
-
-  agent_friendly:
-    grade: F
-    by_model:
-      claude-sonnet-4-20250514:
-        grade: F
-        checks:
-          - id: documented-api
-            result: false
-            evidence: "WeChat's documented APIs (Official Account API, Mini Program API) are for business operators, not individual users. Full API access requires a Verified Service Account with a Chinese business entity."
-            source: "https://kawo.com/en/blog/how-to-open-a-wechat-official-account-oa-and-apply-for-verification"
-          - id: standard-auth
-            result: true
-            evidence: "The WeChat API uses OAuth 2.0 for authentication, which is a standard protocol."
-            source: "https://wechat-oauth2.readthedocs.io/en/latest/api.html"
-          - id: no-anti-automation
-            result: false
-            evidence: "WeChat actively restricts automation and has anti-bot measures. The platform restricts unofficial API usage and requires verified business accounts for programmatic access."
-          - id: machine-readable-output
-            result: true
-            evidence: "The WeChat Official Account API returns JSON responses, which is a standard machine-readable format."
-            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
-          - id: programmatic-crud
-            result: false
-            evidence: "Individual users cannot perform read, write, or delete operations on their personal data via API. The API is limited to business-facing operations."
-            source: "https://developers.weixin.qq.com/doc/offiaccount/en/Getting_Started/Overview.html"
-    notes: "APIs exist only for business operators. No personal data CRUD for individuals. Grade F: no programmatic access for personal data."
 
 links:
   - label: "WeChat Terms of Service"

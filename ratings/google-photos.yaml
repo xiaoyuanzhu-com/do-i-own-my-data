@@ -4,7 +4,7 @@ models:
 
 overall:
   grade: A
-  score: 77
+  score: 80
 
 criteria:
   read:
@@ -33,6 +33,18 @@ criteria:
             result: false
             evidence: "No streaming or real-time read API is available. The Picker API requires user-initiated sessions and does not support automated or real-time access."
             source: "https://developers.google.com/photos/picker/guides/get-started-picker"
+          - id: documented-api
+            result: true
+            evidence: "Google provides publicly documented Photos APIs including the Library API (for uploads) and Picker API (for user-selected reads), available to individual developers."
+            source: "https://developers.google.com/photos"
+          - id: standard-auth
+            result: true
+            evidence: "The Google Photos APIs use standard OAuth 2.0 authentication with well-documented scopes."
+            source: "https://developers.google.com/photos/library/guides/get-started-library"
+          - id: no-anti-automation
+            result: true
+            evidence: "The API uses standard rate limiting without CAPTCHAs or anti-bot barriers for authenticated API access."
+            source: "https://developers.google.com/photos/overview/api-limits-quotas"
     notes: "Comprehensive bulk export via Takeout covering all types in open formats. API read was deprecated in 2025. Grade A: bulk-export AND covers-all-types AND open-format."
 
   write:
@@ -57,6 +69,18 @@ criteria:
             result: true
             evidence: "Bulk upload is supported both via the web UI (drag-and-drop multiple files) and the API (parallel byte uploads with serial batchCreate calls)."
             source: "https://developers.google.com/photos/library/guides/upload-media"
+          - id: documented-api
+            result: true
+            evidence: "Google provides publicly documented Photos APIs including the Library API (for uploads) and Picker API (for user-selected reads), available to individual developers."
+            source: "https://developers.google.com/photos"
+          - id: standard-auth
+            result: true
+            evidence: "The Google Photos APIs use standard OAuth 2.0 authentication with well-documented scopes."
+            source: "https://developers.google.com/photos/library/guides/get-started-library"
+          - id: no-anti-automation
+            result: true
+            evidence: "The API uses standard rate limiting without CAPTCHAs or anti-bot barriers for authenticated API access."
+            source: "https://developers.google.com/photos/overview/api-limits-quotas"
     notes: "All 4 checks pass: file import, service migration, API write, and bulk upload. Grade S."
 
   understand:
@@ -130,34 +154,6 @@ criteria:
             evidence: "Google explicitly states it does not show personalized ads based on content from Google Photos."
             source: "https://safety.google/intl/en_us/products/photos/"
     notes: "Broad license exists for service operation, but no AI training, no data selling, no ad targeting. Grade A: NOT ai-training AND NOT data-selling AND NOT ad-targeting."
-
-  agent_friendly:
-    grade: B
-    by_model:
-      claude-sonnet-4-20250514:
-        grade: B
-        checks:
-          - id: documented-api
-            result: true
-            evidence: "Google provides publicly documented Photos APIs including the Library API (for uploads) and Picker API (for user-selected reads), available to individual developers."
-            source: "https://developers.google.com/photos"
-          - id: standard-auth
-            result: true
-            evidence: "The Google Photos APIs use standard OAuth 2.0 authentication with well-documented scopes."
-            source: "https://developers.google.com/photos/library/guides/get-started-library"
-          - id: no-anti-automation
-            result: true
-            evidence: "The API uses standard rate limiting without CAPTCHAs or anti-bot barriers for authenticated API access."
-            source: "https://developers.google.com/photos/overview/api-limits-quotas"
-          - id: machine-readable-output
-            result: true
-            evidence: "All Google Photos APIs return JSON responses following REST conventions."
-            source: "https://developers.google.com/photos/library/reference/rest"
-          - id: programmatic-crud
-            result: false
-            evidence: "After the March 2025 deprecation, the API supports Create (upload via appendonly scope) but read is limited to app-created content only, and there is no API endpoint for deleting photos."
-            source: "https://developers.google.com/photos/support/updates"
-    notes: "Well-documented APIs with OAuth and JSON, but programmatic-crud fails (no read/delete after 2025 deprecation). Grade B: documented-api AND standard-auth AND machine-readable-output."
 
 links:
   - label: "Google Takeout"

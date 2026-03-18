@@ -33,6 +33,18 @@ criteria:
             result: true
             evidence: "The Bot API supports webhooks and long polling for real-time message updates, and the MTProto API provides persistent connections with real-time event streaming."
             source: "https://core.telegram.org/bots/api"
+          - id: documented-api
+            result: true
+            evidence: "Telegram provides two publicly documented APIs: the Bot API (HTTP-based) and the full MTProto API (via TDLib), both free for individual use."
+            source: "https://core.telegram.org/bots/api"
+          - id: standard-auth
+            result: true
+            evidence: "The Bot API uses token-based authentication (tokens generated via @BotFather). The MTProto API uses API ID/hash plus phone-based auth."
+            source: "https://core.telegram.org/bots/api"
+          - id: no-anti-automation
+            result: true
+            evidence: "There are no CAPTCHAs or anti-bot barriers for API usage. Rate limits are reasonable and well-documented, with paid options to increase them."
+            source: "https://core.telegram.org/bots/faq"
     notes: "All 5 checks pass. Comprehensive export, full API access, real-time streaming. Grade S."
 
   write:
@@ -56,6 +68,18 @@ criteria:
           - id: bulk-upload
             result: true
             evidence: "Via the Bot API, bots can send up to 30 messages per second, enabling bulk operations. The import feature also handles entire chat histories at once."
+            source: "https://core.telegram.org/bots/faq"
+          - id: documented-api
+            result: true
+            evidence: "Telegram provides two publicly documented APIs: the Bot API (HTTP-based) and the full MTProto API (via TDLib), both free for individual use."
+            source: "https://core.telegram.org/bots/api"
+          - id: standard-auth
+            result: true
+            evidence: "The Bot API uses token-based authentication (tokens generated via @BotFather). The MTProto API uses API ID/hash plus phone-based auth."
+            source: "https://core.telegram.org/bots/api"
+          - id: no-anti-automation
+            result: true
+            evidence: "There are no CAPTCHAs or anti-bot barriers for API usage. Rate limits are reasonable and well-documented, with paid options to increase them."
             source: "https://core.telegram.org/bots/faq"
     notes: "All 4 checks pass. File import, service migration, API write, and bulk upload all available. Grade S."
 
@@ -130,34 +154,6 @@ criteria:
             evidence: "Telegram Ads targets public channels by topic, not individual users. The platform does not collect user data for ad targeting."
             source: "https://ads.telegram.org/guidelines"
     notes: "All checks pass. Narrow license, explicit AI training ban, no data selling, no personal ad targeting. Grade S."
-
-  agent_friendly:
-    grade: S
-    by_model:
-      claude-sonnet-4-20250514:
-        grade: S
-        checks:
-          - id: documented-api
-            result: true
-            evidence: "Telegram provides two publicly documented APIs: the Bot API (HTTP-based) and the full MTProto API (via TDLib), both free for individual use."
-            source: "https://core.telegram.org/bots/api"
-          - id: standard-auth
-            result: true
-            evidence: "The Bot API uses token-based authentication (tokens generated via @BotFather). The MTProto API uses API ID/hash plus phone-based auth."
-            source: "https://core.telegram.org/bots/api"
-          - id: no-anti-automation
-            result: true
-            evidence: "There are no CAPTCHAs or anti-bot barriers for API usage. Rate limits are reasonable and well-documented, with paid options to increase them."
-            source: "https://core.telegram.org/bots/faq"
-          - id: machine-readable-output
-            result: true
-            evidence: "The Bot API returns all responses in JSON format with a consistent structure."
-            source: "https://core.telegram.org/bots/api"
-          - id: programmatic-crud
-            result: true
-            evidence: "The Bot API supports sending/reading/editing/deleting messages and managing chats programmatically. The MTProto API provides full CRUD for all Telegram operations."
-            source: "https://core.telegram.org/bots/api"
-    notes: "All 5 checks pass. Two well-documented APIs, token auth, JSON output, full CRUD. Grade S."
 
 links:
   - label: "Telegram Export Blog Post"
