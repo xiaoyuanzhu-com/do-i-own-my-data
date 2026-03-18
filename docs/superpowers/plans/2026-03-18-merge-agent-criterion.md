@@ -31,22 +31,86 @@ Key verification: Telegram Read S and Google Photos Write S survive because all 
 ## File Map
 
 **Modify:**
-- `schema/criteria.yaml` — remove `agent_friendly`, update weights
-- `judges/rules.md` — remove Agent section, update Read/Write checks+grading, update weights table
 - `ratings/apple-health.yaml` — migrate checks, update score
 - `ratings/garmin.yaml` — migrate checks, update score
 - `ratings/google-photos.yaml` — migrate checks, update score
 - `ratings/telegram.yaml` — migrate checks, update score
 - `ratings/wechat.yaml` — migrate checks, update score
+- `schema/criteria.yaml` — remove `agent_friendly`, update weights
+- `judges/rules.md` — remove Agent section, update Read/Write checks+grading, update weights table
 - `scripts/validate.py` — remove Agent-Friendly from HEADER_TO_CRITERION
 - `site/src/pages/index.astro` — remove `agent_friendly` from criteriaGroups
 - `site/src/pages/about.astro` — "six" → "five"
 - `site/src/styles/global.css` — grid columns `repeat(7, ...)` → `repeat(6, ...)`
 - `README.md` — 6→5 criteria, remove Agent row
 
+**Verified — no changes needed:**
+- `site/src/data/products.ts` — loads criteria dynamically from schema, no hardcoded `agent_friendly`
+- `site/src/pages/products/[slug].astro` — iterates `criteriaSchema` dynamically, no hardcoded references
+
 ---
 
-## Task 1: Update Schema
+## Task 1: Migrate Rating Files
+
+Migrate rating files first to avoid intermediate validation failures (per spec recommendation). For each of the 5 rating files: copy 3 checks from `agent_friendly` into `read` and `write`, remove `agent_friendly` block, update overall score. The checks to copy are `documented-api`, `standard-auth`, `no-anti-automation` (with their evidence and sources). Drop `machine-readable-output` and `programmatic-crud`.
+
+**Files:**
+- Modify: `ratings/telegram.yaml`
+- Modify: `ratings/google-photos.yaml`
+- Modify: `ratings/apple-health.yaml`
+- Modify: `ratings/garmin.yaml`
+- Modify: `ratings/wechat.yaml`
+
+- [ ] **Step 1: Migrate telegram.yaml**
+
+Copy the 3 checks from `agent_friendly.by_model.claude-sonnet-4-20250514.checks` (documented-api, standard-auth, no-anti-automation) and append them to both `read.by_model.claude-sonnet-4-20250514.checks` and `write.by_model.claude-sonnet-4-20250514.checks`.
+
+Remove entire `agent_friendly:` block (lines 134-160).
+
+Update overall score: `score: 93` (unchanged).
+
+- [ ] **Step 2: Migrate google-photos.yaml**
+
+Same pattern. Copy 3 Agent checks into read and write `by_model` checks.
+
+Remove entire `agent_friendly:` block (lines 134-160).
+
+Update overall: `score: 80` (was 77).
+
+- [ ] **Step 3: Migrate apple-health.yaml**
+
+Same pattern.
+
+Remove entire `agent_friendly:` block (lines 134-160).
+
+Update overall: `score: 71` (was 69).
+
+- [ ] **Step 4: Migrate garmin.yaml**
+
+Same pattern.
+
+Remove entire `agent_friendly:` block (lines 133-159).
+
+Update overall: `score: 65` (was 62).
+
+- [ ] **Step 5: Migrate wechat.yaml**
+
+Same pattern.
+
+Remove entire `agent_friendly:` block (lines 128-153).
+
+Update overall: `score: 24` (was 22).
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add ratings/
+git commit -m "ratings: migrate Agent checks into Read/Write for all 5 products"
+```
+
+---
+
+## Task 2: Update Schema
 
 **Files:**
 - Modify: `schema/criteria.yaml`
@@ -89,7 +153,7 @@ git commit -m "schema: remove agent_friendly criterion, update weights to 5-way 
 
 ---
 
-## Task 2: Update Grading Rules
+## Task 3: Update Grading Rules
 
 **Files:**
 - Modify: `judges/rules.md`
@@ -176,66 +240,6 @@ Delete the entire `## Agent-Friendly — Is it agent-friendly?` section includin
 ```bash
 git add judges/rules.md
 git commit -m "rules: merge Agent checks into Read/Write, remove Agent section"
-```
-
----
-
-## Task 3: Migrate Rating Files
-
-For each of the 5 rating files, perform the same operation: copy 3 checks from `agent_friendly` into `read` and `write`, remove `agent_friendly` block, update overall score. The checks to copy are `documented-api`, `standard-auth`, `no-anti-automation` (with their evidence and sources). Drop `machine-readable-output` and `programmatic-crud`.
-
-**Files:**
-- Modify: `ratings/telegram.yaml`
-- Modify: `ratings/google-photos.yaml`
-- Modify: `ratings/apple-health.yaml`
-- Modify: `ratings/garmin.yaml`
-- Modify: `ratings/wechat.yaml`
-
-- [ ] **Step 1: Migrate telegram.yaml**
-
-Copy the 3 checks from `agent_friendly.by_model.claude-sonnet-4-20250514.checks` (documented-api, standard-auth, no-anti-automation) and append them to both `read.by_model.claude-sonnet-4-20250514.checks` and `write.by_model.claude-sonnet-4-20250514.checks`.
-
-Remove entire `agent_friendly:` block (lines 134-160).
-
-Update overall score: `score: 93` (unchanged).
-
-- [ ] **Step 2: Migrate google-photos.yaml**
-
-Same pattern. Copy 3 Agent checks into read and write `by_model` checks.
-
-Remove entire `agent_friendly:` block (lines 134-160).
-
-Update overall: `score: 80` (was 77).
-
-- [ ] **Step 3: Migrate apple-health.yaml**
-
-Same pattern.
-
-Remove entire `agent_friendly:` block (lines 134-160).
-
-Update overall: `score: 71` (was 69).
-
-- [ ] **Step 4: Migrate garmin.yaml**
-
-Same pattern.
-
-Remove entire `agent_friendly:` block (lines 133-159).
-
-Update overall: `score: 65` (was 62).
-
-- [ ] **Step 5: Migrate wechat.yaml**
-
-Same pattern.
-
-Remove entire `agent_friendly:` block (lines 128-153).
-
-Update overall: `score: 24` (was 22).
-
-- [ ] **Step 6: Commit**
-
-```bash
-git add ratings/
-git commit -m "ratings: migrate Agent checks into Read/Write for all 5 products"
 ```
 
 ---
@@ -385,7 +389,7 @@ Remove the Agent description block (lines 32-33):
 > **Agent** — can an AI agent do all the above programmatically, without manual steps?
 ```
 
-On line 41, change `rating each of the 6 criteria` to `rating each of the 5 criteria`.
+On line 48, change `rating each of the 6 criteria` to `rating each of the 5 criteria`.
 
 - [ ] **Step 2: Commit**
 
