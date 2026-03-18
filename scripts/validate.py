@@ -14,7 +14,6 @@ HEADER_TO_CRITERION = {
     "Understand": "understand",
     "Delete": "delete",
     "Ownership": "ownership",
-    "Agent-Friendly": "agent_friendly",
 }
 
 VALID_GRADES = {"S", "A", "B", "C", "D", "F"}
